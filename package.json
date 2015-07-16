@@ -1,0 +1,32 @@
+{
+  "name": "react-native-image-progress",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native",
+    "react-component",
+    "react-native-component",
+    "react",
+    "mobile",
+    "ios",
+    "ui",
+    "image",
+    "progress",
+    "bar",
+    "progressbar",
+    "loading",
+    "indicator"
+  ],
+  "author": "Joel Arvidsson",
+  "license": "MIT",
+  "peerDependencies": {
+    "react-native": "=> 0.8.0 || 0.8.0-rc"
+  },
+  "dependencies": {
+    "lodash": "^3.10.0"
+  }
+}
