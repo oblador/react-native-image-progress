@@ -12,8 +12,9 @@ var {
 } = React
 var flattenStyle = require('react-native/Libraries/StyleSheet/flattenStyle');
 
+var BAR_CONTAINER_PADDING = 1;
 var BAR_WIDTH = 150;
-var BAR_HEIGHT = 6;
+var BAR_HEIGHT = 5;
 var MIN_PADDING = 10;
 
 var ImageProgress = React.createClass({
@@ -76,7 +77,7 @@ var ImageProgress = React.createClass({
           }
 
           var barWidthStyle = { width: barWidth };
-          var barProgressStyle = { width: (barWidth - 2) * this.state.progress };
+          var barProgressStyle = { width: (barWidth - BAR_CONTAINER_PADDING * 2) * this.state.progress };
 
           indicator = (
             <View style={[styles.barContainer, barWidthStyle]}>
@@ -108,15 +109,15 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
   },
   barContainer: {
-    height: BAR_HEIGHT,
-    borderRadius: BAR_HEIGHT/2,
+    borderRadius: (BAR_HEIGHT + BAR_CONTAINER_PADDING)/2,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    padding: BAR_CONTAINER_PADDING,
   },
   bar: {
-    margin: 1,
-    backgroundColor: 'black',
-    borderRadius: BAR_HEIGHT/2 - 1,
-    height: BAR_HEIGHT - 2,
+    borderRadius: BAR_HEIGHT/2,
+    padding: BAR_HEIGHT/2,
+    backgroundColor: '#333',
+    height: BAR_HEIGHT,
   }
 });
 
