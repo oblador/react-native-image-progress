@@ -9,6 +9,7 @@ var {
   Image,
   View,
   StyleSheet,
+  ActivityIndicatorIOS,
 } = React
 var flattenStyle = require('react-native/Libraries/StyleSheet/flattenStyle');
 
@@ -69,6 +70,11 @@ var ImageProgress = React.createClass({
       props.style = flattenStyle([styles.container, props.style]);
       switch(props.indicator) {
         case 'circle': throw new Error('Not yet implemented'); break;
+
+        case 'spinner': {
+          indicator = (<ActivityIndicatorIOS />);
+          break;
+        }
 
         default: {
           var barWidth = BAR_WIDTH;
