@@ -19,7 +19,7 @@ var MIN_PADDING = 10;
 var ImageProgress = React.createClass({
   getInitialState: function() {
     return {
-      loading: false,
+      loading: true,
       error: false,
       progress: 0,
     };
@@ -33,16 +33,9 @@ var ImageProgress = React.createClass({
     this.setState({ layout: event.nativeEvent.layout });
   },
 
-  handleLoadStart: function() {
-    this.setState({
-      error: false,
-      loading: true,
-      progress: 0,
-    });
-  },
-
   handleLoadProgress: function(event) {
     this.setState({
+      loading: true,
       progress: event.nativeEvent.written / event.nativeEvent.total,
     });
   },
@@ -69,7 +62,7 @@ var ImageProgress = React.createClass({
 
   render: function() {
     var indicator = false;
-    var props = _.omit(this.props, 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError', 'handleLayoutChange');
+    var props = _.omit(this.props, 'onLoadStart', 'onLoadProgress', 'onLoadEnd', 'onLoadAbort', 'onLoadError', 'handleLayoutChange');
 
     if(this.state.loading) {
       props.style = flattenStyle([styles.container, props.style]);
@@ -97,9 +90,8 @@ var ImageProgress = React.createClass({
       <Image
         {...props}
         ref={component => this._root = component}
-        onLoadStart={this.handleLoadStart}
         onLoadProgress={this.handleLoadProgress}
-        onLoaded={this.handleLoaded}
+        onLoadEnd={this.handleLoaded}
         onLoadAbort={this.handleLoadAbort}
         onLoadError={this.handleLoadError}
         onLayout={this.handleLayoutChange}
