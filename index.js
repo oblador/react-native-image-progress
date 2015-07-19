@@ -35,10 +35,21 @@ var ImageProgress = React.createClass({
     this.setState({ layout: event.nativeEvent.layout });
   },
 
-  handleLoadProgress: function(event) {
+  handleLoadStart: function(event) {
     this.setState({
       loading: true,
-      progress: event.nativeEvent.written / event.nativeEvent.total,
+      progress: 0,
+    });
+  },
+
+  handleLoadProgress: function(event) {
+    // RN is very buggy with these events, sometimes a loaded event and then a few
+    // 100% progress – sometimes in an infinite loop. So we just assume 100% progress
+    // actually means the image is no longer loading
+    var progress = event.nativeEvent.written / event.nativeEvent.total;
+    this.setState({
+      loading: progress < 1,
+      progress: progress,
     });
   },
 
@@ -64,7 +75,7 @@ var ImageProgress = React.createClass({
 
   render: function() {
     var indicator = false;
-    var props = _.omit(this.props, 'onLoadStart', 'onLoadProgress', 'onLoadEnd', 'onLoadAbort', 'onLoadError', 'handleLayoutChange');
+    var props = _.omit(this.props, 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError', 'handleLayoutChange');
 
     if(this.state.loading) {
       props.style = flattenStyle([styles.container, props.style]);
@@ -98,7 +109,8 @@ var ImageProgress = React.createClass({
         {...props}
         ref={component => this._root = component}
         onLoadProgress={this.handleLoadProgress}
-        onLoadEnd={this.handleLoaded}
+        onLoadStart={this.handleLoadStart}
+        onLoaded={this.handleLoaded}
         onLoadAbort={this.handleLoadAbort}
         onLoadError={this.handleLoadError}
         onLayout={this.handleLayoutChange}
