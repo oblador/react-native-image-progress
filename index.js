@@ -27,6 +27,14 @@ var ImageProgress = React.createClass({
     };
   },
 
+  getDefaultProps: function() {
+    return {
+      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      color: '#333',
+      indicator: 'bar',
+    };
+  },
+
   setNativeProps: function(nativeProps) {
     this._root.setNativeProps(nativeProps);
   },
@@ -75,11 +83,14 @@ var ImageProgress = React.createClass({
 
   render: function() {
     var indicator = false;
-    var props = _.omit(this.props, 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError', 'handleLayoutChange');
+    var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color', 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError', 'handleLayoutChange');
+    var style = flattenStyle(this.state.loading ? [styles.container, props.style] : props.style);
+    var color = style.color || this.props.color;
+    props.style = _.omit(style, 'color');
 
     if(this.state.loading) {
-      props.style = flattenStyle([styles.container, props.style]);
-      switch(props.indicator) {
+
+      switch(this.props.indicator) {
         case 'circle': throw new Error('Not yet implemented'); break;
 
         case 'spinner': {
@@ -87,20 +98,29 @@ var ImageProgress = React.createClass({
           break;
         }
 
-        default: {
+        case 'bar': {
           var barWidth = BAR_WIDTH;
           if(this.state.layout) {
             barWidth = Math.min(BAR_WIDTH, this.state.layout.width - MIN_PADDING * 2);
           }
 
-          var barWidthStyle = { width: barWidth };
-          var barProgressStyle = { width: (barWidth - BAR_CONTAINER_PADDING * 2) * this.state.progress };
+          var barBackgroundStyle = {
+            width: barWidth,
+            backgroundColor: this.props.backgroundColor,
+          };
+          var barProgressStyle = {
+            width: (barWidth - BAR_CONTAINER_PADDING * 2) * this.state.progress,
+            backgroundColor: color,
+          };
 
           indicator = (
-            <View style={[styles.barContainer, barWidthStyle]}>
+            <View style={[styles.barContainer, barBackgroundStyle]}>
               <View style={[styles.bar, barProgressStyle]}></View>
             </View>)
           break;
+        }
+        default: {
+          throw new Error('Invalid indicator type: ' + this.props.indicator);
         }
       }
     }
@@ -128,13 +148,11 @@ var styles = StyleSheet.create({
   },
   barContainer: {
     borderRadius: (BAR_HEIGHT + BAR_CONTAINER_PADDING)/2,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     padding: BAR_CONTAINER_PADDING,
   },
   bar: {
     borderRadius: BAR_HEIGHT/2,
     padding: BAR_HEIGHT/2,
-    backgroundColor: '#333',
     height: BAR_HEIGHT,
   }
 });

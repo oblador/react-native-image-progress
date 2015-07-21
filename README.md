@@ -29,6 +29,8 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 | Prop | Description | Default |
 |---|---|---|
 |**`indicator`**|Style of the indicator, can be `bar` or `spinner`|`bar`|
+|**`color`**|Color of the progress bar, can be passed in `style.color` too|`#333`|
+|**`backgroundColor`**|Color of the background (only applies to bar)|`rgba(255, 255, 255, 0.5)`|
 
 ## Demo
 
@@ -43,6 +45,7 @@ Check full example in the `Example` folder.
 - [x] Progress bar indicator
 - [ ] Circular loading indicator
 - [ ] Animate progress
+- [ ] Optionally fade in images on completion
 
 ## License
 
