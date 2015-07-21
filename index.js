@@ -82,7 +82,7 @@ var ImageProgress = React.createClass({
   },
 
   render: function() {
-    var indicator = false;
+    var children = this.props.children;
     var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color', 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError', 'handleLayoutChange');
     var style = flattenStyle(this.state.loading ? [styles.container, props.style] : props.style);
     var color = style.color || this.props.color;
@@ -94,7 +94,7 @@ var ImageProgress = React.createClass({
         case 'circle': throw new Error('Not yet implemented'); break;
 
         case 'spinner': {
-          indicator = (<ActivityIndicatorIOS />);
+          children = (<ActivityIndicatorIOS />);
           break;
         }
 
@@ -113,7 +113,7 @@ var ImageProgress = React.createClass({
             backgroundColor: color,
           };
 
-          indicator = (
+          children = (
             <View style={[styles.barContainer, barBackgroundStyle]}>
               <View style={[styles.bar, barProgressStyle]}></View>
             </View>)
@@ -135,7 +135,7 @@ var ImageProgress = React.createClass({
         onLoadError={this.handleLoadError}
         onLayout={this.handleLayoutChange}
       >
-        {indicator}
+        {children}
       </Image>
     );
   }
