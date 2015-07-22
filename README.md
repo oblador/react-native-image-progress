@@ -47,7 +47,7 @@ Check full example in the `Example` folder.
 
 - [x] Progress bar indicator
 - [ ] Circular loading indicator
-- [ ] Animate progress
+- [x] Animate progress
 - [ ] Optionally fade in images on completion
 
 ## License

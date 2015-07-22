@@ -13,10 +13,7 @@ var {
 } = React
 var flattenStyle = require('react-native/Libraries/StyleSheet/flattenStyle');
 
-var BAR_CONTAINER_PADDING = 1;
-var BAR_WIDTH = 150;
-var BAR_HEIGHT = 5;
-var MIN_PADDING = 10;
+var ProgressBar = require('./ProgressBar');
 
 var ImageProgress = React.createClass({
   getInitialState: function() {
@@ -36,10 +33,6 @@ var ImageProgress = React.createClass({
 
   setNativeProps: function(nativeProps) {
     this._root.setNativeProps(nativeProps);
-  },
-
-  handleLayoutChange: function(event) {
-    this.setState({ layout: event.nativeEvent.layout });
   },
 
   bubbleEvent: function(propertyName, event) {
@@ -91,30 +84,6 @@ var ImageProgress = React.createClass({
     this.bubbleEvent('onLoadError', event);
   },
 
-  _renderProgressBar: function(progress, color) {
-    var barWidth = BAR_WIDTH;
-    if(this.state.layout) {
-      barWidth = Math.min(BAR_WIDTH, this.state.layout.width - MIN_PADDING * 2);
-    }
-
-    var barBackgroundStyle = {
-      width: barWidth,
-      backgroundColor: this.props.backgroundColor,
-    };
-    var barProgressStyle = {
-      width: (barWidth - BAR_CONTAINER_PADDING * 2) * progress,
-    };
-    if(color) {
-      barProgressStyle.backgroundColor = color;
-    }
-
-    return (
-      <View style={[styles.barContainer, barBackgroundStyle]}>
-        <View style={[styles.bar, barProgressStyle]}></View>
-      </View>
-    );
-  },
-
   _renderIndicator: function(progress, color) {
     switch(this.props.indicator) {
       case 'circle': throw new Error('Not yet implemented');
@@ -128,7 +97,14 @@ var ImageProgress = React.createClass({
       }
 
       case 'bar': {
-        return this._renderProgressBar(progress, color);
+        var props = { progress };
+        if(color) {
+          props.color = color;
+        }
+        if(this.props.backgroundColor) {
+          props.backgroundColor = this.props.backgroundColor;
+        }
+        return (<ProgressBar {...props} />);
       }
 
       default: {
@@ -161,7 +137,6 @@ var ImageProgress = React.createClass({
         onLoaded={this.handleLoaded}
         onLoadAbort={this.handleLoadAbort}
         onLoadError={this.handleLoadError}
-        onLayout={this.handleLayoutChange}
       >
         {children}
       </Image>
@@ -174,16 +149,6 @@ var styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  barContainer: {
-    borderRadius: (BAR_HEIGHT + BAR_CONTAINER_PADDING)/2,
-    padding: BAR_CONTAINER_PADDING,
-  },
-  bar: {
-    borderRadius: BAR_HEIGHT/2,
-    padding: BAR_HEIGHT/2,
-    height: BAR_HEIGHT,
-    backgroundColor: '#333',
-  }
 });
 
 module.exports = ImageProgress;
