@@ -81,48 +81,55 @@ var ImageProgress = React.createClass({
     });
   },
 
+  _renderIndicator: function(progress, color, backgroundColor) {
+    switch(this.props.indicator) {
+      case 'circle': throw new Error('Not yet implemented');
+
+      case 'spinner': {
+        return (<ActivityIndicatorIOS />);
+      }
+
+      case 'bar': {
+        var barWidth = BAR_WIDTH;
+        if(this.state.layout) {
+          barWidth = Math.min(BAR_WIDTH, this.state.layout.width - MIN_PADDING * 2);
+        }
+
+        var barBackgroundStyle = {
+          width: barWidth,
+          backgroundColor: this.props.backgroundColor,
+        };
+        var barProgressStyle = {
+          width: (barWidth - BAR_CONTAINER_PADDING * 2) * progress,
+          backgroundColor: color,
+        };
+
+        return (
+          <View style={[styles.barContainer, barBackgroundStyle]}>
+            <View style={[styles.bar, barProgressStyle]}></View>
+          </View>
+        );
+      }
+      default: {
+        throw new Error('Invalid indicator type: ' + this.props.indicator);
+      }
+    }
+  },
+
   render: function() {
     var children = this.props.children;
-    var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color', 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError', 'handleLayoutChange');
+
+    // Don't pass on props that are overridden or specific to this module.
+    var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color', 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError');
+
+    // Flatten style so we can read the color property, but remove it since it doen't apply to Image
     var style = flattenStyle(this.state.loading ? [styles.container, props.style] : props.style);
     var color = style.color || this.props.color;
     props.style = _.omit(style, 'color');
 
     if(this.state.loading) {
-
-      switch(this.props.indicator) {
-        case 'circle': throw new Error('Not yet implemented'); break;
-
-        case 'spinner': {
-          children = (<ActivityIndicatorIOS />);
-          break;
-        }
-
-        case 'bar': {
-          var barWidth = BAR_WIDTH;
-          if(this.state.layout) {
-            barWidth = Math.min(BAR_WIDTH, this.state.layout.width - MIN_PADDING * 2);
-          }
-
-          var barBackgroundStyle = {
-            width: barWidth,
-            backgroundColor: this.props.backgroundColor,
-          };
-          var barProgressStyle = {
-            width: (barWidth - BAR_CONTAINER_PADDING * 2) * this.state.progress,
-            backgroundColor: color,
-          };
-
-          children = (
-            <View style={[styles.barContainer, barBackgroundStyle]}>
-              <View style={[styles.bar, barProgressStyle]}></View>
-            </View>)
-          break;
-        }
-        default: {
-          throw new Error('Invalid indicator type: ' + this.props.indicator);
-        }
-      }
+      var renderIndicator = this.props.renderIndicator || this._renderIndicator;
+      children = renderIndicator(this.state.progress, color)
     }
     return (
       <Image
