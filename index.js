@@ -42,11 +42,18 @@ var ImageProgress = React.createClass({
     this.setState({ layout: event.nativeEvent.layout });
   },
 
-  handleLoadStart: function(event) {
+  bubbleEvent: function(propertyName, event) {
+    if(typeof this.props[propertyName] === 'function') {
+      this.props[propertyName](event);
+    }
+  },
+
+  handleLoadStart: function() {
     this.setState({
       loading: true,
       progress: 0,
     });
+    this.bubbleEvent('onLoadStart');
   },
 
   handleLoadProgress: function(event) {
@@ -58,6 +65,7 @@ var ImageProgress = React.createClass({
       loading: progress < 1,
       progress: progress,
     });
+    this.bubbleEvent('onLoadProgress', event);
   },
 
   handleLoaded: function() {
@@ -65,19 +73,22 @@ var ImageProgress = React.createClass({
       loading: false,
       progress: 1,
     });
+    this.bubbleEvent('onLoaded');
   },
 
   handleLoadAbort: function() {
     this.setState({
       loading: false,
     });
+    this.bubbleEvent('onLoadAbort');
   },
 
-  handleLoadError: function() {
+  handleLoadError: function(event) {
     this.setState({
       error: true,
       loading: false,
     });
+    this.bubbleEvent('onLoadError', event);
   },
 
   _renderProgressBar: function(progress, color) {
