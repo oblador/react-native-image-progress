@@ -30,7 +30,6 @@ var ImageProgress = React.createClass({
   getDefaultProps: function() {
     return {
       backgroundColor: 'rgba(255, 255, 255, 0.5)',
-      color: '#333',
       indicator: 'bar',
     };
   },
@@ -81,35 +80,46 @@ var ImageProgress = React.createClass({
     });
   },
 
-  _renderIndicator: function(progress, color, backgroundColor) {
+  _renderProgressBar: function(progress, color) {
+    var barWidth = BAR_WIDTH;
+    if(this.state.layout) {
+      barWidth = Math.min(BAR_WIDTH, this.state.layout.width - MIN_PADDING * 2);
+    }
+
+    var barBackgroundStyle = {
+      width: barWidth,
+      backgroundColor: this.props.backgroundColor,
+    };
+    var barProgressStyle = {
+      width: (barWidth - BAR_CONTAINER_PADDING * 2) * progress,
+    };
+    if(color) {
+      barProgressStyle.backgroundColor = color;
+    }
+
+    return (
+      <View style={[styles.barContainer, barBackgroundStyle]}>
+        <View style={[styles.bar, barProgressStyle]}></View>
+      </View>
+    );
+  },
+
+  _renderIndicator: function(progress, color) {
     switch(this.props.indicator) {
       case 'circle': throw new Error('Not yet implemented');
 
       case 'spinner': {
-        return (<ActivityIndicatorIOS />);
+        var props = {};
+        if(color) {
+          props.color = color;
+        }
+        return (<ActivityIndicatorIOS {...props} />);
       }
 
       case 'bar': {
-        var barWidth = BAR_WIDTH;
-        if(this.state.layout) {
-          barWidth = Math.min(BAR_WIDTH, this.state.layout.width - MIN_PADDING * 2);
-        }
-
-        var barBackgroundStyle = {
-          width: barWidth,
-          backgroundColor: this.props.backgroundColor,
-        };
-        var barProgressStyle = {
-          width: (barWidth - BAR_CONTAINER_PADDING * 2) * progress,
-          backgroundColor: color,
-        };
-
-        return (
-          <View style={[styles.barContainer, barBackgroundStyle]}>
-            <View style={[styles.bar, barProgressStyle]}></View>
-          </View>
-        );
+        return this._renderProgressBar(progress, color);
       }
+
       default: {
         throw new Error('Invalid indicator type: ' + this.props.indicator);
       }
@@ -161,6 +171,7 @@ var styles = StyleSheet.create({
     borderRadius: BAR_HEIGHT/2,
     padding: BAR_HEIGHT/2,
     height: BAR_HEIGHT,
+    backgroundColor: '#333',
   }
 });
 
