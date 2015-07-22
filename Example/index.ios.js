@@ -60,7 +60,12 @@ var Example = React.createClass({
     return (
       <View style={styles.container}>
         <TouchableHighlight onPress={this.randomize}>
-          <Image source={{ uri: this.state.imageUri }} indicator={this.state.indicator} style={styles.image}/>
+          <Image
+            source={{ uri: this.state.imageUri }}
+            indicator={this.state.indicator}
+            style={styles.image}
+            onLoaded={() => console.log('Image was loaded!')}
+          />
         </TouchableHighlight>
       </View>
     );
