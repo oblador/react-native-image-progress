@@ -1,6 +1,6 @@
 {
   "name": "react-native-image-progress",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Progress indicator for networked images, supports progress bar and spinner",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,7 @@
   "author": "Joel Arvidsson",
   "license": "MIT",
   "peerDependencies": {
-    "react-native": "=> 0.8.0 || 0.8.0-rc || 0.8.0-rc.2"
+    "react-native": "=>0.9.0 || 0.9.0-rc"
   },
   "dependencies": {
     "lodash": "^3.10.0"

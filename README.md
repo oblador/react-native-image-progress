@@ -1,7 +1,7 @@
 # react-native-image-progress
 *Progress indicator for networked images in React Native*
 
-**NOTE: This module requires React Native 0.8+**
+**NOTE: This module requires React Native 0.9+**
 
 ## Installation
 

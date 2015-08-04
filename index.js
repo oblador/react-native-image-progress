@@ -49,7 +49,7 @@ var ImageProgress = React.createClass({
     this.bubbleEvent('onLoadStart');
   },
 
-  handleLoadProgress: function(event) {
+  handleProgress: function(event) {
     // RN is very buggy with these events, sometimes a loaded event and then a few
     // 100% progress – sometimes in an infinite loop. So we just assume 100% progress
     // actually means the image is no longer loading
@@ -58,30 +58,30 @@ var ImageProgress = React.createClass({
       loading: progress < 1,
       progress: progress,
     });
-    this.bubbleEvent('onLoadProgress', event);
+    this.bubbleEvent('onProgress', event);
   },
 
-  handleLoaded: function() {
+  handleLoad: function() {
     this.setState({
       loading: false,
       progress: 1,
     });
-    this.bubbleEvent('onLoaded');
+    this.bubbleEvent('onLoad');
   },
 
-  handleLoadAbort: function() {
+  handleAbort: function() {
     this.setState({
       loading: false,
     });
-    this.bubbleEvent('onLoadAbort');
+    this.bubbleEvent('onAbort');
   },
 
-  handleLoadError: function(event) {
+  handleError: function(event) {
     this.setState({
       error: true,
       loading: false,
     });
-    this.bubbleEvent('onLoadError', event);
+    this.bubbleEvent('onError', event);
   },
 
   _renderIndicator: function(progress, color) {
@@ -117,7 +117,7 @@ var ImageProgress = React.createClass({
     var children = this.props.children;
 
     // Don't pass on props that are overridden or specific to this module.
-    var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color', 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError');
+    var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color', 'onLoadStart', 'onProgress', 'onLoad', 'onAbort', 'onError');
 
     // Flatten style so we can read the color property, but remove it since it doen't apply to Image
     var style = flattenStyle(this.state.loading ? [styles.container, props.style] : props.style);
@@ -132,11 +132,11 @@ var ImageProgress = React.createClass({
       <Image
         {...props}
         ref={component => this._root = component}
-        onLoadProgress={this.handleLoadProgress}
+        onProgress={this.handleProgress}
         onLoadStart={this.handleLoadStart}
-        onLoaded={this.handleLoaded}
-        onLoadAbort={this.handleLoadAbort}
-        onLoadError={this.handleLoadError}
+        onLoad={this.handleLoad}
+        onAbort={this.handleAbort}
+        onError={this.handleError}
       >
         {children}
       </Image>
