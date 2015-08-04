@@ -26,7 +26,7 @@
   "author": "Joel Arvidsson",
   "license": "MIT",
   "peerDependencies": {
-    "react-native": "=> 0.8.0 || 0.8.0-rc || 0.8.0-rc.2"
+    "react-native": ">=0.8.0 || 0.8.0-rc || 0.8.0-rc.2"
   },
   "dependencies": {
     "lodash": "^3.10.0"
