@@ -42,10 +42,12 @@ var ImageProgress = React.createClass({
   },
 
   handleLoadStart: function() {
-    this.setState({
-      loading: true,
-      progress: 0,
-    });
+    if (!this.state.loading && this.state.progress !== 1) {
+      this.setState({
+        loading: true,
+        progress: 0,
+      });
+    }
     this.bubbleEvent('onLoadStart');
   },
 
@@ -54,18 +56,22 @@ var ImageProgress = React.createClass({
     // 100% progress – sometimes in an infinite loop. So we just assume 100% progress
     // actually means the image is no longer loading
     var progress = event.nativeEvent.written / event.nativeEvent.total;
-    this.setState({
-      loading: progress < 1,
-      progress: progress,
-    });
+    if (progress !== this.state.progress && this.state.progress !== 1) {
+      this.setState({
+        loading: progress < 1,
+        progress: progress,
+      });
+    }
     this.bubbleEvent('onLoadProgress', event);
   },
 
   handleLoaded: function() {
-    this.setState({
-      loading: false,
-      progress: 1,
-    });
+    if (this.state.progress !== 1) {
+      this.setState({
+        loading: false,
+        progress: 1,
+      });
+    }
     this.bubbleEvent('onLoaded');
   },
 
@@ -82,6 +88,12 @@ var ImageProgress = React.createClass({
       loading: false,
     });
     this.bubbleEvent('onLoadError', event);
+  },
+
+  componentWillReceiveProps: function(props) {
+    if(!_.isEqual(this.props.source, props.source)) {
+      this.setState(this.getInitialState());
+    }
   },
 
   _renderIndicator: function(progress, color) {
