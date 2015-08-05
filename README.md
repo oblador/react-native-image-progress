@@ -52,5 +52,5 @@ Check full example in the `Example` folder.
 
 ## License
 
-[MIT License](http://opensource.org/licenses/mit-license.html).
+[MIT License](http://opensource.org/licenses/mit-license.html). © Joel Arvidsson
 
