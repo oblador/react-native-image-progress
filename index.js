@@ -42,6 +42,11 @@ var ImageProgress = React.createClass({
   },
 
   handleLoadStart: function() {
+    if (this.state.loading || this.state.progress >= 1) {
+      // Minimize calls to setState!
+      return;
+    }
+
     this.setState({
       loading: true,
       progress: 0,
@@ -54,6 +59,11 @@ var ImageProgress = React.createClass({
     // 100% progress – sometimes in an infinite loop. So we just assume 100% progress
     // actually means the image is no longer loading
     var progress = event.nativeEvent.written / event.nativeEvent.total;
+    if (progress === this.state.progress) {
+      // Minimize calls to setState!
+      return;
+    }
+
     this.setState({
       loading: progress < 1,
       progress: progress,
@@ -62,6 +72,11 @@ var ImageProgress = React.createClass({
   },
 
   handleLoaded: function() {
+    if (this.state.progress === 1) {
+      // Minimize calls to setState!
+      return;
+    }
+
     this.setState({
       loading: false,
       progress: 1,
