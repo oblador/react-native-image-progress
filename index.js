@@ -78,62 +78,30 @@ var ImageProgress = React.createClass({
     }
   },
 
-  // React>=0.8.0
   handleLoadStart: function() {
     this.setStateStart();
     this.bubbleEvent('onLoadStart');
   },
 
-  // React>=0.9.0
   handleProgress: function(event) {
     var progress = event.nativeEvent.loaded / event.nativeEvent.total;
     this.setStateProgress(progress);
     this.bubbleEvent('onProgress', event);
   },
 
-  // React>=0.9.0
   handleError: function(event) {
     this.setStateError();
     this.bubbleEvent('onError', event);
   },
 
-  // React>=0.9.0
   handleLoad: function(event) {
     this.setStateLoaded();
     this.bubbleEvent('onLoad', event);
   },
 
-  // React>=0.9.0
   handleLoadEnd: function(event) {
     this.setStateLoaded();
     this.bubbleEvent('onLoadEnd', event);
-  },
-
-  // React<0.9.0
-  handleLoadProgress: function(event) {
-    var progress = event.nativeEvent.written / event.nativeEvent.total;
-    this.setStateProgress(progress);
-    this.bubbleEvent('onLoadProgress', event);
-  },
-
-  // React<0.9.0
-  handleLoaded: function() {
-    this.setStateLoaded();
-    this.bubbleEvent('onLoaded');
-  },
-
-  // React<0.9.0
-  handleLoadAbort: function() {
-    this.setState({
-      loading: false,
-    });
-    this.bubbleEvent('onLoadAbort');
-  },
-
-  // React<0.9.0
-  handleLoadError: function(event) {
-    this.setStateError();
-    this.bubbleEvent('onLoadError', event);
   },
 
   componentWillReceiveProps: function(props) {
@@ -175,7 +143,7 @@ var ImageProgress = React.createClass({
     var children = this.props.children;
 
     // Don't pass on props that are overridden or specific to this module.
-    var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color', 'onLoadStart', 'onLoadProgress', 'onLoaded', 'onLoadAbort', 'onLoadError');
+    var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color');
 
     // Flatten style so we can read the color property, but remove it since it doen't apply to Image
     var style = flattenStyle(this.state.loading ? [styles.container, props.style] : props.style);
@@ -190,15 +158,11 @@ var ImageProgress = React.createClass({
       <Image
         {...props}
         ref={component => this._root = component}
-        onLoadStart={this.handleLoadStart} // React>=0.8.0
-        onProgress={this.handleProgress} // React>=0.9.0
-        onError={this.handleError} // React>=0.9.0
-        onLoad={this.handleLoad} // React>=0.9.0
-        onLoadEnd={this.handleLoadEnd} // React>=0.9.0
-        onLoadAbort={this.handleLoadAbort} // React<0.9.0
-        onLoadError={this.handleLoadError} // React<0.9.0
-        onLoadProgress={this.handleLoadProgress} // React<0.9.0
-        onLoaded={this.handleLoaded} // React<0.9.0
+        onLoadStart={this.handleLoadStart}
+        onProgress={this.handleProgress}
+        onError={this.handleError}
+        onLoad={this.handleLoad}
+        onLoadEnd={this.handleLoadEnd}
       >
         {children}
       </Image>

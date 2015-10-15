@@ -1,7 +1,7 @@
 # react-native-image-progress
 *Progress indicator for networked images in React Native*
 
-**NOTE: This module requires React Native 0.8+**
+**NOTE: This module requires React Native 0.9+**
 
 ## Installation
 
@@ -33,7 +33,7 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 |**`color`**|Color of the indicator, can be passed in `style.color` too|`#333` for bar, `gray` for spinner|
 |**`backgroundColor`**|Color of the background (only applies to bar)|`rgba(255, 255, 255, 0.5)`|
 
-Note: `onLoad*` events are bubbled up, so if you wan't to do some custom thing when the image is loaded for example. Currently those are very buggy though.
+Note: `onLoad*` events are bubbled up, so if you wan't to do some custom thing when the image is loaded for example. 
 
 ## Demo
 
