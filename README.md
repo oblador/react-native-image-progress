@@ -29,7 +29,7 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 | Prop | Description | Default |
 |---|---|---|
 |**`indicator`**|Style of the indicator, can be `bar` or `spinner`|`bar`|
-|**`renderIndicator`**|Function to render your own custom indicator, passes `progress` and `color` arguments|*None*|
+|**`renderIndicator(progress)`**|Function to render your own custom indicator, the `progress` argument is a number between 0 and 1|*None*|
 |**`color`**|Color of the indicator.|`#333` for bar, `gray` for spinner|
 |**`backgroundColor`**|Color of the background (only applies to bar)|`rgba(255, 255, 255, 0.5)`|
 

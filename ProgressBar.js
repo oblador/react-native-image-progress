@@ -18,17 +18,24 @@ var MIN_PADDING = 10;
 var ALMOST_ZERO = 0.00000001;
 
 var ProgressBar = React.createClass({
-  getInitialState: function() {
-    return {
-      barWidth: BAR_WIDTH,
-      progressWidth: new Animated.Value(ALMOST_ZERO),
-    };
+  propTypes: {
+    progress:         React.PropTypes.number,
+    color:            React.PropTypes.string,
+    backgroundColor:  React.PropTypes.string,
   },
 
   getDefaultProps: function() {
     return {
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      progress: 0,
       color: '#333',
+      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    };
+  },
+
+  getInitialState: function() {
+    return {
+      barWidth: BAR_WIDTH,
+      progressWidth: new Animated.Value(this.props.progress || ALMOST_ZERO),
     };
   },
 
@@ -49,22 +56,13 @@ var ProgressBar = React.createClass({
   },
 
   render: function() {
-    var { barWidth } = this.state;
-    var barBackgroundStyle = {
-      width: barWidth,
-      backgroundColor: this.props.backgroundColor,
-    };
-    var barProgressStyle = {
-      width: this.state.progressWidth,
-    };
-    if(this.props.color) {
-      barProgressStyle.backgroundColor = this.props.color;
-    }
+    var { color, backgroundColor } = this.props;
+    var { barWidth, progressWidth } = this.state;
 
     return (
       <View onLayout={this.handleLayoutChange}>
-        <View style={[styles.barContainer, barBackgroundStyle]}>
-          <Animated.View style={[styles.bar, barProgressStyle]} />
+        <View style={[styles.barContainer, { width: barWidth, backgroundColor }]}>
+          <Animated.View style={[styles.bar, { width: progressWidth, backgroundColor: color }]} />
         </View>
       </View>
     );
@@ -80,7 +78,6 @@ var styles = StyleSheet.create({
     borderRadius: BAR_HEIGHT/2,
     padding: BAR_HEIGHT/2,
     height: BAR_HEIGHT,
-    backgroundColor: '#333',
   }
 });
 

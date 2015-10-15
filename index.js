@@ -15,18 +15,23 @@ var {
 var ProgressBar = require('./ProgressBar');
 
 var ImageProgress = React.createClass({
-  getInitialState: function() {
-    return {
-      loading: true,
-      error: false,
-      progress: 0,
-    };
+  propTypes: {
+    indicator:        React.PropTypes.oneOf(['bar', 'spinner']),
+    renderIndicator:  React.PropTypes.func,
+    color:            React.PropTypes.string,
+    backgroundColor:  React.PropTypes.string,
   },
 
   getDefaultProps: function() {
     return {
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
       indicator: 'bar',
+    };
+  },
+
+  getInitialState: function() {
+    return {
+      loading: true,
+      progress: 0,
     };
   },
 
@@ -40,32 +45,18 @@ var ImageProgress = React.createClass({
     }
   },
 
-  setStateStart: function() {
+  handleLoadStart: function() {
     if (!this.state.loading && this.state.progress !== 1) {
       this.setState({
         loading: true,
         progress: 0,
       });
     }
+    this.bubbleEvent('onLoadStart');
   },
 
-  setStateLoaded: function() {
-    if (this.state.progress !== 1) {
-      this.setState({
-        loading: false,
-        progress: 1,
-      });
-    }
-  },
-
-  setStateError: function() {
-    this.setState({
-      error: true,
-      loading: false,
-    });
-  },
-
-  setStateProgress: function(progress) {
+  handleProgress: function(event) {
+    var progress = event.nativeEvent.loaded / event.nativeEvent.total;
     // RN is very buggy with these events, sometimes a loaded event and then a few
     // 100% progress – sometimes in an infinite loop. So we just assume 100% progress
     // actually means the image is no longer loading
@@ -75,32 +66,24 @@ var ImageProgress = React.createClass({
         progress: progress,
       });
     }
-  },
-
-  handleLoadStart: function() {
-    this.setStateStart();
-    this.bubbleEvent('onLoadStart');
-  },
-
-  handleProgress: function(event) {
-    var progress = event.nativeEvent.loaded / event.nativeEvent.total;
-    this.setStateProgress(progress);
     this.bubbleEvent('onProgress', event);
   },
 
   handleError: function(event) {
-    this.setStateError();
+    this.setState({
+      loading: false,
+    });
     this.bubbleEvent('onError', event);
   },
 
   handleLoad: function(event) {
-    this.setStateLoaded();
+    if (this.state.progress !== 1) {
+      this.setState({
+        loading: false,
+        progress: 1,
+      });
+    }
     this.bubbleEvent('onLoad', event);
-  },
-
-  handleLoadEnd: function(event) {
-    this.setStateLoaded();
-    this.bubbleEvent('onLoadEnd', event);
   },
 
   componentWillReceiveProps: function(props) {
@@ -114,22 +97,13 @@ var ImageProgress = React.createClass({
       case 'circle': throw new Error('Not yet implemented');
 
       case 'spinner': {
-        var props = {};
-        if(color) {
-          props.color = color;
-        }
+        var props = _.pick(this.props, 'color');
         return (<ActivityIndicatorIOS {...props} />);
       }
 
       case 'bar': {
-        var props = { progress };
-        if(color) {
-          props.color = color;
-        }
-        if(this.props.backgroundColor) {
-          props.backgroundColor = this.props.backgroundColor;
-        }
-        return (<ProgressBar {...props} />);
+        var props = _.pick(this.props, 'color', 'backgroundColor');
+        return (<ProgressBar progress={progress} {...props} />);
       }
 
       default: {
@@ -139,19 +113,18 @@ var ImageProgress = React.createClass({
   },
 
   render: function() {
-    var { style, color, children, renderIndicator, ...props } = this.props;
+    var { style, children, renderIndicator, ...props } = this.props;
 
     // Don't pass on props that are used for the indicator.
-    var props = _.omit(props, 'indicator', 'backgroundColor');
+    var props = _.omit(props, 'indicator', 'color', 'backgroundColor');
 
-    // Flatten style so we can read the color property, but remove it since it doen't apply to Image
     if(this.state.loading) {
       style = style ? [styles.container, style] : styles.container;
     }
 
     if(this.state.loading) {
       renderIndicator = renderIndicator || this._renderIndicator;
-      children = renderIndicator(this.state.progress, color)
+      children = renderIndicator(this.state.progress)
     }
     return (
       <Image
@@ -162,7 +135,6 @@ var ImageProgress = React.createClass({
         onProgress={this.handleProgress}
         onError={this.handleError}
         onLoad={this.handleLoad}
-        onLoadEnd={this.handleLoadEnd}
       >
         {children}
       </Image>
