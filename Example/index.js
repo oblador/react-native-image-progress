@@ -53,10 +53,18 @@ var Example = React.createClass({
   },
 
   randomize: function() {
-    this.setState(this.getRandomState());
+    this.setState({ clear: true });
+    setTimeout(() => {
+      this.setState(this.getRandomState());
+      this.setState({ clear: false });
+    });
   },
 
   render: function() {
+    // React Native progress handlers are not reset when an image download is cancelled
+    // so to avoid jittering we'll force RN to use a new Image element for each source
+    if(this.state.clear) { return false; }
+
     return (
       <View style={styles.container}>
         <TouchableHighlight onPress={this.randomize}>
