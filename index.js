@@ -30,7 +30,7 @@ var ImageProgress = React.createClass({
 
   getInitialState: function() {
     return {
-      loading: true,
+      loading: !!Image.propTypes.onProgress,
       progress: 0,
     };
   },
