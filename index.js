@@ -11,7 +11,6 @@ var {
   StyleSheet,
   ActivityIndicatorIOS,
 } = React
-var flattenStyle = require('react-native/Libraries/StyleSheet/flattenStyle');
 
 var ProgressBar = require('./ProgressBar');
 
@@ -140,24 +139,25 @@ var ImageProgress = React.createClass({
   },
 
   render: function() {
-    var children = this.props.children;
+    var { style, color, children, renderIndicator, ...props } = this.props;
 
-    // Don't pass on props that are overridden or specific to this module.
-    var props = _.omit(this.props, 'children', 'indicator', 'backgroundColor', 'color');
+    // Don't pass on props that are used for the indicator.
+    var props = _.omit(props, 'indicator', 'backgroundColor');
 
     // Flatten style so we can read the color property, but remove it since it doen't apply to Image
-    var style = flattenStyle(this.state.loading ? [styles.container, props.style] : props.style);
-    var color = style.color || this.props.color;
-    props.style = _.omit(style, 'color');
+    if(this.state.loading) {
+      style = style ? [styles.container, style] : styles.container;
+    }
 
     if(this.state.loading) {
-      var renderIndicator = this.props.renderIndicator || this._renderIndicator;
+      renderIndicator = renderIndicator || this._renderIndicator;
       children = renderIndicator(this.state.progress, color)
     }
     return (
       <Image
         {...props}
         ref={component => this._root = component}
+        style={style}
         onLoadStart={this.handleLoadStart}
         onProgress={this.handleProgress}
         onError={this.handleError}

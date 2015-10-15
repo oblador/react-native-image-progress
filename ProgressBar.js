@@ -14,12 +14,14 @@ var BAR_CONTAINER_PADDING = 1;
 var BAR_WIDTH = 150;
 var BAR_HEIGHT = 5;
 var MIN_PADDING = 10;
+// For some reason 0 widths will equal 100% in RN 0.12+
+var ALMOST_ZERO = 0.00000001;
 
 var ProgressBar = React.createClass({
   getInitialState: function() {
     return {
       barWidth: BAR_WIDTH,
-      progressWidth: new Animated.Value(0),
+      progressWidth: new Animated.Value(ALMOST_ZERO),
     };
   },
 
@@ -42,7 +44,7 @@ var ProgressBar = React.createClass({
   componentWillReceiveProps: function(props) {
     var progressWidth = (this.state.barWidth - BAR_CONTAINER_PADDING * 2) * props.progress;
     Animated.spring(this.state.progressWidth, {
-      toValue: progressWidth,
+      toValue: progressWidth || ALMOST_ZERO,
     }).start();
   },
 
