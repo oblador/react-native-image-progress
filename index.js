@@ -3,7 +3,10 @@
  */
 'use strict';
 
-var _ = require('lodash');
+var isEqual = require('lodash/lang/isEqual');
+var omit = require('lodash/object/omit');
+var pick = require('lodash/object/pick');
+
 var React = require('react-native');
 var {
   Image,
@@ -87,7 +90,7 @@ var ImageProgress = React.createClass({
   },
 
   componentWillReceiveProps: function(props) {
-    if(!_.isEqual(this.props.source, props.source)) {
+    if(!isEqual(this.props.source, props.source)) {
       this.setState(this.getInitialState());
     }
   },
@@ -97,12 +100,12 @@ var ImageProgress = React.createClass({
       case 'circle': throw new Error('Not yet implemented');
 
       case 'spinner': {
-        var props = _.pick(this.props, 'color');
+        var props = pick(this.props, 'color');
         return (<ActivityIndicatorIOS {...props} />);
       }
 
       case 'bar': {
-        var props = _.pick(this.props, 'color', 'backgroundColor');
+        var props = pick(this.props, 'color', 'backgroundColor');
         return (<ProgressBar progress={progress} {...props} />);
       }
 
@@ -116,7 +119,7 @@ var ImageProgress = React.createClass({
     var { style, children, renderIndicator, ...props } = this.props;
 
     // Don't pass on props that are used for the indicator.
-    var props = _.omit(props, 'indicator', 'color', 'backgroundColor');
+    var props = omit(props, 'indicator', 'color', 'backgroundColor');
 
     if(this.state.loading) {
       style = style ? [styles.container, style] : styles.container;
