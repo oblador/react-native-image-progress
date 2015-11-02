@@ -3,10 +3,6 @@
  */
 'use strict';
 
-var isEqual = require('lodash/lang/isEqual');
-var omit = require('lodash/object/omit');
-var pick = require('lodash/object/pick');
-
 var React = require('react-native');
 var {
   Image,
@@ -104,7 +100,7 @@ var ImageProgress = React.createClass({
   },
 
   componentWillReceiveProps: function(props) {
-    if(!isEqual(this.props.source, props.source)) {
+    if(!this.props.source || !props.source || this.props.source.uri !== props.source.uri) {
       this.setState(this.getInitialState());
     }
   },
