@@ -15,20 +15,16 @@ var {
   ActivityIndicatorIOS,
 } = React
 
-var ProgressBar = require('./ProgressBar');
-
 var ImageProgress = React.createClass({
   propTypes: {
-    indicator:        React.PropTypes.oneOf(['bar', 'spinner']),
+    indicator:        React.PropTypes.func,
+    indicatorProps:   React.PropTypes.object,
     renderIndicator:  React.PropTypes.func,
-    color:            React.PropTypes.string,
-    backgroundColor:  React.PropTypes.string,
     threshold:        React.PropTypes.number,
   },
 
   getDefaultProps: function() {
     return {
-      indicator: 'bar',
       threshold: 50,
     };
   },
@@ -113,36 +109,18 @@ var ImageProgress = React.createClass({
     }
   },
 
-  _renderIndicator: function(progress, color) {
-    switch(this.props.indicator) {
-      case 'circle': throw new Error('Not yet implemented');
-
-      case 'spinner': {
-        var props = pick(this.props, 'color');
-        return (<ActivityIndicatorIOS {...props} />);
-      }
-
-      case 'bar': {
-        var props = pick(this.props, 'color', 'backgroundColor');
-        return (<ProgressBar progress={progress} {...props} />);
-      }
-
-      default: {
-        throw new Error('Invalid indicator type: ' + this.props.indicator);
-      }
-    }
-  },
-
   render: function() {
-    var { style, children, renderIndicator, ...props } = this.props;
+    var { style, children, indicator, indicatorProps, renderIndicator, threshold, ...props } = this.props;
+    var { progress, thresholdReached, loading } = this.state;
 
-    // Don't pass on props that are used for the indicator.
-    var props = omit(props, 'indicator', 'color', 'backgroundColor');
-
-    if(loading && thresholdReached) {
+    if((loading || progress < 1) && thresholdReached) {
       style = style ? [styles.container, style] : styles.container;
-      renderIndicator = renderIndicator || this._renderIndicator;
-      children = renderIndicator(this.state.progress)
+      if(renderIndicator) {
+        children = renderIndicator(progress, !loading || !progress);
+      } else {
+        var IndicatorComponent = (typeof indicator === 'function' ? indicator : ActivityIndicatorIOS);
+        children = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
+      }
     }
     return (
       <Image
