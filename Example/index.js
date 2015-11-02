@@ -13,7 +13,13 @@ var {
   TouchableHighlight,
 } = React;
 
+// Polyfill React.ART if needed
+if(!React.ART) {
+  React.ART = require('ReactNativeART');
+}
+
 var Image = require('react-native-image-progress');
+var Progress = require('react-native-progress');
 
 var IMAGES = [
   'http://www.savethecat.com/wp-content/uploads/2015/06/cats.jpg',
@@ -24,7 +30,7 @@ var IMAGES = [
   'http://awesomegifs.com/wp-content/uploads/cat-smacks-at-hands.gif',
 ];
 
-var INDICATORS = ['bar', 'spinner'];
+var INDICATORS = [null, Progress.Bar, Progress.Circle, Progress.Pie];
 
 var Example = React.createClass({
   getInitialState: function() {
