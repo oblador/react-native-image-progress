@@ -23,11 +23,13 @@ var ImageProgress = React.createClass({
     renderIndicator:  React.PropTypes.func,
     color:            React.PropTypes.string,
     backgroundColor:  React.PropTypes.string,
+    threshold:        React.PropTypes.number,
   },
 
   getDefaultProps: function() {
     return {
       indicator: 'bar',
+      threshold: 50,
     };
   },
 
@@ -35,11 +37,27 @@ var ImageProgress = React.createClass({
     return {
       loading: false,
       progress: 0,
+      thresholdReached: !this.props.threshold,
     };
   },
 
   setNativeProps: function(nativeProps) {
     this._root.setNativeProps(nativeProps);
+  },
+
+  componentDidMount: function() {
+    if(this.props.threshold) {
+      this._thresholdTimer = setTimeout(() => {
+        this.setState({ thresholdReached: true });
+        this._thresholdTimer = null;
+      }, this.props.threshold);
+    }
+  },
+
+  componentWillUnmount: function() {
+    if(this._thresholdTimer) {
+      clearTimeout(this._thresholdTimer);
+    }
   },
 
   bubbleEvent: function(propertyName, event) {
@@ -121,11 +139,8 @@ var ImageProgress = React.createClass({
     // Don't pass on props that are used for the indicator.
     var props = omit(props, 'indicator', 'color', 'backgroundColor');
 
-    if(this.state.loading) {
+    if(loading && thresholdReached) {
       style = style ? [styles.container, style] : styles.container;
-    }
-
-    if(this.state.loading) {
       renderIndicator = renderIndicator || this._renderIndicator;
       children = renderIndicator(this.state.progress)
     }
