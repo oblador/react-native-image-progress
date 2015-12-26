@@ -6,20 +6,16 @@
 
 var React = require('react-native');
 var {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   TouchableHighlight,
+  Platform,
 } = React;
 
-// Polyfill React.ART if needed
-if(!React.ART) {
-  React.ART = require('ReactNativeART');
-}
 
 var Image = require('react-native-image-progress');
-var Progress = require('react-native-progress');
+var ProgressBar = require('react-native-progress/Bar');
 
 var IMAGES = [
   'http://www.savethecat.com/wp-content/uploads/2015/06/cats.jpg',
@@ -30,7 +26,14 @@ var IMAGES = [
   'http://awesomegifs.com/wp-content/uploads/cat-smacks-at-hands.gif',
 ];
 
-var INDICATORS = [null, Progress.Bar, Progress.Circle, Progress.Pie];
+var INDICATORS;
+if(Platform.OS === 'ios') {
+  var Progress = require('react-native-progress');
+  INDICATORS = [null, Progress.Bar, Progress.Circle, Progress.Pie];
+} else {
+  var ProgressBar = require('react-native-progress/Bar');
+  INDICATORS = [ProgressBar];
+}
 
 var Example = React.createClass({
   getInitialState: function() {
@@ -99,4 +102,4 @@ var styles = StyleSheet.create({
   }
 });
 
-AppRegistry.registerComponent('Example', () => Example);
+module.exports = Example;
