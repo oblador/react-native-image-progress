@@ -34,6 +34,7 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 |**`indicatorProps`**|An object of props being passed to the `indicator` component. To disable indeterminate state, pass `{indeterminate: false}`.|*None*|
 |**`renderIndicator(progress, indeterminate)`**|Function to render your own custom indicator, useful for something very simple. If not, consider breaking it out to a separate component and use `indicator` prop instead.|*None*|
 |**`threshold`**|Number of milliseconds after mount to wait before displaying the indicator. Basically a workaround for cached images not to flash a spinner. Set to `0` to disable.|`50`|
+|**`urlTimeout`**|Number of milliseconds to wait before we stop showing the loading indicator (for example if an image url is broken). Set to `0` to disable.|`10000`|
 
 Note: `onLoad*` events are bubbled up, so if you wan't to do some custom thing when the image is loaded for example. 
 

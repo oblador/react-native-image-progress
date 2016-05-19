@@ -17,11 +17,13 @@ var ImageProgress = React.createClass({
     indicatorProps:   React.PropTypes.object,
     renderIndicator:  React.PropTypes.func,
     threshold:        React.PropTypes.number,
+    urlTimeout:       React.PropTypes.number,
   },
 
   getDefaultProps: function() {
     return {
       threshold: 50,
+      urlTimeout: 10000
     };
   },
 
@@ -30,6 +32,8 @@ var ImageProgress = React.createClass({
       loading: false,
       progress: 0,
       thresholdReached: !this.props.threshold,
+      urlTimeoutReached: !this.props.urlTimeout,
+      imageFetchedBeforeTimeout: false,
     };
   },
 
@@ -63,7 +67,22 @@ var ImageProgress = React.createClass({
       this.setState({
         loading: true,
         progress: 0,
+        imageFetchedBeforeTimeout: false,
+        urlTimeoutReached: false
       });
+      //Now starting image timer for uri: this.props.source.uri
+      this._urlTimeoutTimer = setTimeout(() => {
+        if(this.state.imageFetchedBeforeTimeout==false){
+          //Timer timeout for: "+this.props.source.uri
+          this.setState({ 
+            urlTimeoutReached: true,
+            loading: false,
+            progress: 1,
+           });
+          this.bubbleEvent('onError', "Image unreachable. We reached a network timeout. Please check the image uri.");
+          this._urlTimeoutTimer = null;
+        }
+      }, this.props.urlTimeout);
     }
     this.bubbleEvent('onLoadStart');
   },
@@ -91,9 +110,11 @@ var ImageProgress = React.createClass({
 
   handleLoad: function(event) {
     if (this.state.progress !== 1) {
+      //Image load complete for: "+this.props.source.uri
       this.setState({
         loading: false,
         progress: 1,
+        imageFetchedBeforeTimeout: true
       });
     }
     this.bubbleEvent('onLoad', event);
