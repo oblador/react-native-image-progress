@@ -3,13 +3,15 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
+
+var ReactNative = require('react-native');
 var {
   Image,
   View,
   StyleSheet,
   ActivityIndicatorIOS,
-} = React
+} = ReactNative
 
 var ImageProgress = React.createClass({
   propTypes: {
