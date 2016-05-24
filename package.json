@@ -4,7 +4,7 @@
   "description": "Progress indicator for networked images, supports progress bar and spinner",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint index.js"
   },
   "keywords": [
     "react-native",
@@ -24,5 +24,11 @@
     "indicator"
   ],
   "author": "Joel Arvidsson",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-eslint": "^6.0.4",
+    "eslint": "^2.9.0",
+    "eslint-plugin-react": "^5.0.1"
+  }
 }
