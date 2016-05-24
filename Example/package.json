@@ -6,8 +6,9 @@
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
-    "react-native": "^0.17.0",
+    "react": "15.0.2",
+    "react-native": "^0.26.1",
     "react-native-image-progress": "file:../",
-    "react-native-progress": "^2.2.0"
+    "react-native-progress": "^3.0.0"
   }
 }

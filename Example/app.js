@@ -4,18 +4,18 @@
  */
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
+var ReactNative = require('react-native');
 var {
   StyleSheet,
   Text,
   View,
   TouchableHighlight,
   Platform,
-} = React;
+} = ReactNative;
 
 
 var Image = require('react-native-image-progress');
-var ProgressBar = require('react-native-progress/Bar');
 
 var IMAGES = [
   'http://www.savethecat.com/wp-content/uploads/2015/06/cats.jpg',
@@ -31,8 +31,8 @@ if(Platform.OS === 'ios') {
   var Progress = require('react-native-progress');
   INDICATORS = [null, Progress.Bar, Progress.Circle, Progress.Pie];
 } else {
-  var ProgressBar = require('react-native-progress/Bar');
-  INDICATORS = [ProgressBar];
+  var ProgressBar = require('react-native-progress/Bar').default;
+  INDICATORS = [null, ProgressBar];
 }
 
 var Example = React.createClass({
