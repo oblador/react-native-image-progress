@@ -1,64 +1,85 @@
-/**
- * @providesModule ImageProgress
- */
-'use strict';
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
 
-var React = require('react-native');
-var {
+import {
+  ActivityIndicatorIOS,
+  ProgressBarAndroid,
   Image,
   View,
   StyleSheet,
-  ActivityIndicatorIOS,
-} = React
+  Platform,
+} from 'react-native';
 
-var ImageProgress = React.createClass({
-  propTypes: {
-    indicator:        React.PropTypes.func,
-    indicatorProps:   React.PropTypes.object,
-    renderIndicator:  React.PropTypes.func,
-    threshold:        React.PropTypes.number,
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+});
 
-  getDefaultProps: function() {
-    return {
-      threshold: 50,
-    };
-  },
+const DefaultIndicator = Platform.OS === 'android' ? ProgressBarAndroid : ActivityIndicatorIOS;
 
-  getInitialState: function() {
-    return {
+class ImageProgress extends Component {
+  static propTypes = {
+    indicator: PropTypes.func,
+    indicatorProps: PropTypes.object,
+    renderIndicator: PropTypes.func,
+    threshold: PropTypes.number,
+  };
+
+  static defaultProps = {
+    threshold: 50,
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
       loading: false,
       progress: 0,
-      thresholdReached: !this.props.threshold,
+      thresholdReached: !props.threshold,
     };
-  },
+  }
 
-  setNativeProps: function(nativeProps) {
-    this._root.setNativeProps(nativeProps);
-  },
-
-  componentDidMount: function() {
-    if(this.props.threshold) {
+  componentDidMount() {
+    if (this.props.threshold) {
       this._thresholdTimer = setTimeout(() => {
         this.setState({ thresholdReached: true });
         this._thresholdTimer = null;
       }, this.props.threshold);
     }
-  },
+  }
 
-  componentWillUnmount: function() {
-    if(this._thresholdTimer) {
+  componentWillUnmount() {
+    if (this._thresholdTimer) {
       clearTimeout(this._thresholdTimer);
     }
-  },
+  }
 
-  bubbleEvent: function(propertyName, event) {
-    if(typeof this.props[propertyName] === 'function') {
+  componentWillReceiveProps(props) {
+    if (!this.props.source || !props.source || this.props.source.uri !== props.source.uri) {
+      this.setState({
+        loading: false,
+        progress: 0,
+      });
+    }
+  }
+
+  setNativeProps(nativeProps) {
+    if (this._root) {
+      this._root.setNativeProps(nativeProps);
+    }
+  }
+
+  bubbleEvent(propertyName, event) {
+    if (typeof this.props[propertyName] === 'function') {
       this.props[propertyName](event);
     }
-  },
+  }
 
-  handleLoadStart: function() {
+  handleLoadStart = () => {
     if (!this.state.loading && this.state.progress !== 1) {
       this.setState({
         loading: true,
@@ -66,11 +87,11 @@ var ImageProgress = React.createClass({
       });
     }
     this.bubbleEvent('onLoadStart');
-  },
+  };
 
-  handleProgress: function(event) {
-    var progress = event.nativeEvent.loaded / event.nativeEvent.total;
-    // RN is very buggy with these events, sometimes a loaded event and then a few
+  handleProgress = (event) => {
+    const progress = event.nativeEvent.loaded / event.nativeEvent.total;
+    // RN is a bit buggy with these events, sometimes a loaded event and then a few
     // 100% progress – sometimes in an infinite loop. So we just assume 100% progress
     // actually means the image is no longer loading
     if (progress !== this.state.progress && this.state.progress !== 1) {
@@ -80,16 +101,16 @@ var ImageProgress = React.createClass({
       });
     }
     this.bubbleEvent('onProgress', event);
-  },
+  };
 
-  handleError: function(event) {
+  handleError = (event) => {
     this.setState({
       loading: false,
     });
     this.bubbleEvent('onError', event);
-  },
+  };
 
-  handleLoad: function(event) {
+  handleLoad = (event) => {
     if (this.state.progress !== 1) {
       this.setState({
         loading: false,
@@ -97,48 +118,38 @@ var ImageProgress = React.createClass({
       });
     }
     this.bubbleEvent('onLoad', event);
-  },
+  };
 
-  componentWillReceiveProps: function(props) {
-    if(!this.props.source || !props.source || this.props.source.uri !== props.source.uri) {
-      this.setState(this.getInitialState());
-    }
-  },
+  render() {
+    const { indicator, indicatorProps, renderIndicator, threshold, ...props } = this.props;
+    const { progress, thresholdReached, loading } = this.state;
 
-  render: function() {
-    var { style, children, indicator, indicatorProps, renderIndicator, threshold, ...props } = this.props;
-    var { progress, thresholdReached, loading } = this.state;
+    let style = this.props.style;
+    let content = this.props.children;
 
-    if((loading || progress < 1) && thresholdReached) {
+    if ((loading || progress < 1) && thresholdReached) {
       style = style ? [styles.container, style] : styles.container;
-      if(renderIndicator) {
-        children = renderIndicator(progress, !loading || !progress);
+      if (renderIndicator) {
+        content = renderIndicator(progress, !loading || !progress);
       } else {
-        var IndicatorComponent = (typeof indicator === 'function' ? indicator : ActivityIndicatorIOS);
-        children = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
+        const IndicatorComponent = (typeof indicator === 'function' ? indicator : DefaultIndicator);
+        content = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
       }
     }
     return (
       <Image
         {...props}
-        ref={component => this._root = component}
+        ref={component => { this._root = component; }}
         style={style}
         onLoadStart={this.handleLoadStart}
         onProgress={this.handleProgress}
         onError={this.handleError}
         onLoad={this.handleLoad}
       >
-        {children}
+        {content}
       </Image>
     );
   }
-});
-
-var styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+}
 
 module.exports = ImageProgress;
