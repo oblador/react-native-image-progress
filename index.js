@@ -54,6 +54,9 @@ var ImageProgress = React.createClass({
     if(this._thresholdTimer) {
       clearTimeout(this._thresholdTimer);
     }
+    if(this._urlTimeoutTimer) {
+      clearTimeout(this._urlTimeoutTimer); 
+    }
   },
 
   bubbleEvent: function(propertyName, event) {
