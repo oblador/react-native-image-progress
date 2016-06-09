@@ -125,15 +125,16 @@ class ImageProgress extends Component {
     const { progress, thresholdReached, loading } = this.state;
 
     let style = this.props.style;
-    let content = this.props.children;
+    let children = this.props.children;
+    let progressContent = null;
 
     if ((loading || progress < 1) && thresholdReached) {
       style = style ? [styles.container, style] : styles.container;
       if (renderIndicator) {
-        content = renderIndicator(progress, !loading || !progress);
+        progressContent = renderIndicator(progress, !loading || !progress);
       } else {
         const IndicatorComponent = (typeof indicator === 'function' ? indicator : DefaultIndicator);
-        content = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
+        progressContent = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps}/>);
       }
     }
     return (
@@ -146,7 +147,8 @@ class ImageProgress extends Component {
         onError={this.handleError}
         onLoad={this.handleLoad}
       >
-        {content}
+        {progressContent}
+        {children}
       </Image>
     );
   }
