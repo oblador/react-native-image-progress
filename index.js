@@ -4,8 +4,7 @@ import React, {
 } from 'react';
 
 import {
-  ActivityIndicatorIOS,
-  ProgressBarAndroid,
+  ActivityIndicator,
   Image,
   View,
   StyleSheet,
@@ -19,7 +18,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const DefaultIndicator = Platform.OS === 'android' ? ProgressBarAndroid : ActivityIndicatorIOS;
+const DefaultIndicator = ActivityIndicator;
 
 class ImageProgress extends Component {
   static propTypes = {
