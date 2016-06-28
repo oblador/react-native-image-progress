@@ -4,8 +4,7 @@ import React, {
 } from 'react';
 
 import {
-  ActivityIndicatorIOS,
-  ProgressBarAndroid,
+  ActivityIndicator,
   Image,
   View,
   StyleSheet,
@@ -15,22 +14,22 @@ import {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 });
 
-const DefaultIndicator = Platform.OS === 'android' ? ProgressBarAndroid : ActivityIndicatorIOS;
+const DefaultIndicator = ActivityIndicator;
 
 class ImageProgress extends Component {
   static propTypes = {
     indicator: PropTypes.func,
     indicatorProps: PropTypes.object,
     renderIndicator: PropTypes.func,
-    threshold: PropTypes.number,
+    threshold: PropTypes.number
   };
 
   static defaultProps = {
-    threshold: 50,
+    threshold: 50
   };
 
   constructor(props) {
@@ -39,7 +38,7 @@ class ImageProgress extends Component {
     this.state = {
       loading: false,
       progress: 0,
-      thresholdReached: !props.threshold,
+      thresholdReached: !props.threshold
     };
   }
 
@@ -62,7 +61,7 @@ class ImageProgress extends Component {
     if (!this.props.source || !props.source || this.props.source.uri !== props.source.uri) {
       this.setState({
         loading: false,
-        progress: 0,
+        progress: 0
       });
     }
   }
@@ -83,7 +82,7 @@ class ImageProgress extends Component {
     if (!this.state.loading && this.state.progress !== 1) {
       this.setState({
         loading: true,
-        progress: 0,
+        progress: 0
       });
     }
     this.bubbleEvent('onLoadStart');
@@ -97,7 +96,7 @@ class ImageProgress extends Component {
     if (progress !== this.state.progress && this.state.progress !== 1) {
       this.setState({
         loading: progress < 1,
-        progress: progress,
+        progress: progress
       });
     }
     this.bubbleEvent('onProgress', event);
@@ -105,7 +104,7 @@ class ImageProgress extends Component {
 
   handleError = (event) => {
     this.setState({
-      loading: false,
+      loading: false
     });
     this.bubbleEvent('onError', event);
   };
@@ -114,7 +113,7 @@ class ImageProgress extends Component {
     if (this.state.progress !== 1) {
       this.setState({
         loading: false,
-        progress: 1,
+        progress: 1
       });
     }
     this.bubbleEvent('onLoad', event);
