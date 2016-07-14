@@ -142,9 +142,11 @@ var ImageProgress = React.createClass({
         children = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
       }
     }
+    let source = (this.state.urlTimeoutReached===false)?this.props.source:this.props.defaultSource;
     return (
       <Image
         {...props}
+        source={source}
         ref={component => this._root = component}
         style={style}
         onLoadStart={this.handleLoadStart}
