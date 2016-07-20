@@ -8,7 +8,7 @@ var {
   Image,
   View,
   StyleSheet,
-  ActivityIndicatorIOS,
+  ActivityIndicator
 } = require('react-native');
 
 var ImageProgress = React.createClass({
@@ -112,14 +112,12 @@ var ImageProgress = React.createClass({
   },
 
   handleLoad: function(event) {
-    if (this.state.progress !== 1) {
-      //Image load complete for: "+this.props.source.uri
+    //Image load complete for: "+this.props.source.uri
       this.setState({
         loading: false,
         progress: 1,
         imageFetchedBeforeTimeout: true
       });
-    }
     this.bubbleEvent('onLoad', event);
   },
 
@@ -138,11 +136,11 @@ var ImageProgress = React.createClass({
       if(renderIndicator) {
         children = renderIndicator(progress, !loading || !progress);
       } else {
-        var IndicatorComponent = (typeof indicator === 'function' ? indicator : ActivityIndicatorIOS);
+        var IndicatorComponent = (typeof indicator === 'function' ? indicator : ActivityIndicator);
         children = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
       }
     }
-    let source = (this.state.urlTimeoutReached===false)?this.props.source:this.props.defaultSource;
+    let source = (this.state.urlTimeoutReached===true && this.state.imageFetchedBeforeTimeout===false)?this.props.defaultSource:this.props.source;
     return (
       <Image
         {...props}
