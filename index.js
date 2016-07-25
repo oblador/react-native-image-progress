@@ -8,7 +8,7 @@ var {
   Image,
   View,
   StyleSheet,
-  ActivityIndicatorIOS,
+  ActivityIndicator,
 } = React
 
 var ImageProgress = React.createClass({
@@ -114,7 +114,7 @@ var ImageProgress = React.createClass({
       if(renderIndicator) {
         children = renderIndicator(progress, !loading || !progress);
       } else {
-        var IndicatorComponent = (typeof indicator === 'function' ? indicator : ActivityIndicatorIOS);
+        var IndicatorComponent = (typeof indicator === 'function' ? indicator : ActivityIndicator);
         children = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
       }
     }
