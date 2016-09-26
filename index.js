@@ -66,9 +66,14 @@ class ImageProgress extends Component {
     }
   }
 
+  ref = null;
+  handleRef = (ref) => {
+    this.ref = ref;
+  };
+
   setNativeProps(nativeProps) {
-    if (this._root) {
-      this._root.setNativeProps(nativeProps);
+    if (this.ref) {
+      this.ref.setNativeProps(nativeProps);
     }
   }
 
@@ -120,7 +125,7 @@ class ImageProgress extends Component {
   };
 
   render() {
-    const { indicator, indicatorProps, renderIndicator, threshold, ...props } = this.props;
+    const { indicator, indicatorProps, renderIndicator, source, threshold, ...props } = this.props;
     const { progress, thresholdReached, loading } = this.state;
 
     let style = this.props.style;
@@ -138,12 +143,14 @@ class ImageProgress extends Component {
     return (
       <Image
         {...props}
-        ref={component => { this._root = component; }}
-        style={style}
+        key={source ? source.uri || source : undefined}
         onLoadStart={this.handleLoadStart}
         onProgress={this.handleProgress}
         onError={this.handleError}
         onLoad={this.handleLoad}
+        ref={this.handleRef}
+        source={source}
+        style={style}
       >
         {content}
       </Image>
