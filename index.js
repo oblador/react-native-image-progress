@@ -6,9 +6,7 @@ import React, {
 import {
   ActivityIndicator,
   Image,
-  View,
   StyleSheet,
-  Platform,
 } from 'react-native';
 
 const styles = StyleSheet.create({
