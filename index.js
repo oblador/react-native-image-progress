@@ -5,16 +5,24 @@ import React, {
 
 import {
   ActivityIndicator,
-  Image,
   View,
+  Image,
+  Animated,
+  Easing,
   StyleSheet,
-  Platform,
 } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  image: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
   },
 });
 
@@ -26,11 +34,21 @@ class ImageProgress extends Component {
     indicatorProps: PropTypes.object,
     renderIndicator: PropTypes.func,
     threshold: PropTypes.number,
+    animation: PropTypes.object,
+    animationDuration: PropTypes.number,
+    animationEasing: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func,
+    ]),
   };
 
   static defaultProps = {
     threshold: 50,
+    animationDuration: 300,
+    animationEasing: Easing.out(Easing.ease),
   };
+
+  animationValue = new Animated.Value(0)
 
   constructor(props) {
     super(props);
@@ -83,12 +101,33 @@ class ImageProgress extends Component {
     }
   }
 
+  interpolateStyle(animationStyle) {
+    if (Object.prototype.toString.call(animationStyle) === '[object Object]' && 'from' in animationStyle && 'to' in animationStyle) {
+      return this.animationValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [animationStyle.from, animationStyle.to],
+      });
+    }
+    return undefined;
+  }
+
+  animateIn() {
+    return Animated.timing( this.animationValue, {
+      toValue: 1,
+      duration: this.props.animationDuration,
+      easing: this.props.animationEasing,
+    }).start();
+  }
+
   handleLoadStart = () => {
     if (!this.state.loading && this.state.progress !== 1) {
       this.setState({
         loading: true,
         progress: 0,
       });
+      if (this.props.animation) {
+        this.animationValue.setValue(0);
+      }
     }
     this.bubbleEvent('onLoadStart');
   };
@@ -121,39 +160,66 @@ class ImageProgress extends Component {
         progress: 1,
       });
     }
+    if (this.props.animation) {
+      this.animateIn();
+    }
     this.bubbleEvent('onLoad', event);
   };
 
   render() {
-    const { indicator, indicatorProps, renderIndicator, source, threshold, ...props } = this.props;
+    const { indicator, indicatorProps, renderIndicator, source, threshold, animation, ...props } = this.props;
     const { progress, thresholdReached, loading } = this.state;
 
     let style = this.props.style;
-    let content = this.props.children;
+    let children = this.props.children;
+    let progressIndicator = null;
 
     if ((loading || progress < 1) && thresholdReached) {
       style = style ? [styles.container, style] : styles.container;
       if (renderIndicator) {
-        content = renderIndicator(progress, !loading || !progress);
+        progressIndicator = renderIndicator(progress, !loading || !progress);
       } else {
         const IndicatorComponent = (typeof indicator === 'function' ? indicator : DefaultIndicator);
-        content = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
+        progressIndicator = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
       }
     }
+
+    let animationStyle = null;
+    if (animation && typeof animation === 'object') {
+      animationStyle = {};
+      for (key in animation) {
+        if (Object.prototype.toString.call(animation[key]) === '[object Array]') {
+          let arrayStyle = [];
+          for (let i=0; i<animation[key].length; i++) {
+            for (nestedKey in animation[key][i]) {
+              let interpolatedStyle = this.interpolateStyle(animation[key][i][nestedKey])
+              if (interpolatedStyle) arrayStyle.push({[nestedKey]: interpolatedStyle})
+            }
+          }
+          animationStyle[key] = arrayStyle;
+        } else {
+          animationStyle[key] = this.interpolateStyle(animation[key]);
+        }
+      }
+    }
+
     return (
-      <Image
-        {...props}
-        key={source ? source.uri || source : undefined}
-        onLoadStart={this.handleLoadStart}
-        onProgress={this.handleProgress}
-        onError={this.handleError}
-        onLoad={this.handleLoad}
-        ref={this.handleRef}
-        source={source}
-        style={style}
-      >
-        {content}
-      </Image>
+      <View style={style}>
+        <Animated.Image
+          {...props}
+          key={source ? source.uri || source : undefined}
+          onLoadStart={this.handleLoadStart}
+          onProgress={this.handleProgress}
+          onError={this.handleError}
+          onLoad={this.handleLoad}
+          ref={this.handleRef}
+          source={source}
+          style={[styles.image, animationStyle]}
+        >
+        </Animated.Image>
+        {children}
+        {progressIndicator}
+      </View>
     );
   }
 }

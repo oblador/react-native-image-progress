@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Easing,
 } from 'react-native';
 
 import Image from 'react-native-image-progress';
@@ -29,6 +30,17 @@ const styles = StyleSheet.create({
   image: {
     width: 300,
     height: 200,
+    overflow: 'hidden',
+  },
+  text: {
+    fontSize: 10,
+    backgroundColor: '#10101099',
+    color: '#F5FCFF',
+    padding: 5,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });
 
@@ -73,7 +85,22 @@ export default class Example extends Component {
             indicator={this.state.indicator}
             style={styles.image}
             onLoaded={() => console.log('Image was loaded!')}
+            animation={{
+              opacity: {
+                from: 0,
+                to: 1,
+              },
+              transform: [
+                {
+                  scale: {
+                    from: 1.2,
+                    to: 1,
+                  }
+                }
+              ],
+            }}
           />
+          <Text style={styles.text}>{'URI: ' + this.state.imageUri}</Text>
         </TouchableOpacity>
       </View>
     );
