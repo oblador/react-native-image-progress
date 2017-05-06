@@ -1,14 +1,24 @@
 {
-  "name": "Example",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node_modules/react-native/packager/packager.sh"
-  },
-  "dependencies": {
-    "react": "~15.3.0",
-    "react-native": "^0.34.0",
-    "react-native-image-progress": "file:../",
-    "react-native-progress": "^3.1.0"
-  }
+	"name": "Example",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"start": "node node_modules/react-native/local-cli/cli.js start",
+		"test": "jest"
+	},
+	"dependencies": {
+		"react": "16.0.0-alpha.6",
+		"react-native": "0.44.0",
+		"react-native-image-progress": "file:../",
+    "react-native-progress": "^3.2.1"
+	},
+	"devDependencies": {
+		"babel-jest": "20.0.0",
+		"babel-preset-react-native": "1.9.1",
+		"jest": "20.0.0",
+		"react-test-renderer": "16.0.0-alpha.6"
+	},
+	"jest": {
+		"preset": "react-native"
+	}
 }
