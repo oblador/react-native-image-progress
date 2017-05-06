@@ -99,8 +99,9 @@ export default class Example extends Component {
                 }
               ],
             }}
-          />
-          <Text style={styles.text}>{'URI: ' + this.state.imageUri}</Text>
+            >
+            <Text style={styles.text}>{'URI: ' + this.state.imageUri}</Text>
+          </Image>
         </TouchableOpacity>
       </View>
     );
