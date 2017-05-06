@@ -170,12 +170,30 @@ class ImageProgress extends Component {
     const { indicator, indicatorProps, renderIndicator, source, threshold, animation, ...props } = this.props;
     const { progress, thresholdReached, loading } = this.state;
 
-    let style = this.props.style;
-    let children = this.props.children;
+    const children = this.props.children;
     let progressIndicator = null;
 
+    const passedStyle = StyleSheet.flatten(this.props.style);
+    let imageStyle = null;
+    let containerStyle = null;
+    if (passedStyle) {
+      (({
+        resizeMode,
+        tintColor,
+        overlayColor,
+        ...otherStyles,
+      }) => {
+        imageStyle = {
+          resizeMode,
+          tintColor,
+          overlayColor,
+        };
+        containerStyle = {...otherStyles};
+      })(passedStyle);
+    }
+ 
     if ((loading || progress < 1) && thresholdReached) {
-      style = style ? [styles.container, style] : styles.container;
+      containerStyle = containerStyle ? [styles.container, containerStyle] : styles.container;
       if (renderIndicator) {
         progressIndicator = renderIndicator(progress, !loading || !progress);
       } else {
@@ -204,7 +222,7 @@ class ImageProgress extends Component {
     }
 
     return (
-      <View style={style}>
+      <View style={containerStyle}>
         <Animated.Image
           {...props}
           key={source ? source.uri || source : undefined}
@@ -214,7 +232,7 @@ class ImageProgress extends Component {
           onLoad={this.handleLoad}
           ref={this.handleRef}
           source={source}
-          style={[styles.image, animationStyle]}
+          style={[styles.image, imageStyle, animationStyle]}
         >
         </Animated.Image>
         {children}
