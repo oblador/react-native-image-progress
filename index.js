@@ -13,7 +13,12 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
+  progressContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -167,10 +172,9 @@ class ImageProgress extends Component {
   };
 
   render() {
-    const { indicator, indicatorProps, renderIndicator, source, threshold, animation, ...props } = this.props;
+    const { indicator, indicatorProps, renderIndicator, source, threshold, animation, children, ...props } = this.props;
     const { progress, thresholdReached, loading } = this.state;
 
-    const children = this.props.children;
     let progressIndicator = null;
 
     const passedStyle = StyleSheet.flatten(this.props.style);
@@ -193,7 +197,6 @@ class ImageProgress extends Component {
     }
  
     if ((loading || progress < 1) && thresholdReached) {
-      containerStyle = containerStyle ? [styles.container, containerStyle] : styles.container;
       if (renderIndicator) {
         progressIndicator = renderIndicator(progress, !loading || !progress);
       } else {
@@ -236,7 +239,9 @@ class ImageProgress extends Component {
         >
         </Animated.Image>
         {children}
-        {progressIndicator}
+        <View style={styles.progressContainer}>
+          {progressIndicator}
+        </View>
       </View>
     );
   }
