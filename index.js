@@ -239,7 +239,7 @@ class ImageProgress extends Component {
         >
         </Animated.Image>
         {children}
-        <View style={styles.progressContainer}>
+        <View style={styles.progressContainer} pointerEvents="none">
           {progressIndicator}
         </View>
       </View>
