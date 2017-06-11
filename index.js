@@ -12,8 +12,8 @@ import {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 });
 
 const DefaultIndicator = ActivityIndicator;
@@ -23,11 +23,11 @@ class ImageProgress extends Component {
     indicator: PropTypes.func,
     indicatorProps: PropTypes.object,
     renderIndicator: PropTypes.func,
-    threshold: PropTypes.number,
+    threshold: PropTypes.number
   };
 
   static defaultProps = {
-    threshold: 50,
+    threshold: 50
   };
 
   constructor(props) {
@@ -36,7 +36,7 @@ class ImageProgress extends Component {
     this.state = {
       loading: false,
       progress: 0,
-      thresholdReached: !props.threshold,
+      thresholdReached: !props.threshold
     };
   }
 
@@ -59,7 +59,7 @@ class ImageProgress extends Component {
     if (!this.props.source || !props.source || this.props.source.uri !== props.source.uri) {
       this.setState({
         loading: false,
-        progress: 0,
+        progress: 0
       });
     }
   }
@@ -85,7 +85,7 @@ class ImageProgress extends Component {
     if (!this.state.loading && this.state.progress !== 1) {
       this.setState({
         loading: true,
-        progress: 0,
+        progress: 0
       });
     }
     this.bubbleEvent('onLoadStart');
@@ -99,7 +99,7 @@ class ImageProgress extends Component {
     if (progress !== this.state.progress && this.state.progress !== 1) {
       this.setState({
         loading: progress < 1,
-        progress: progress,
+        progress: progress
       });
     }
     this.bubbleEvent('onProgress', event);
@@ -107,7 +107,7 @@ class ImageProgress extends Component {
 
   handleError = (event) => {
     this.setState({
-      loading: false,
+      loading: false
     });
     this.bubbleEvent('onError', event);
   };
@@ -116,7 +116,7 @@ class ImageProgress extends Component {
     if (this.state.progress !== 1) {
       this.setState({
         loading: false,
-        progress: 1,
+        progress: 1
       });
     }
     this.bubbleEvent('onLoad', event);
@@ -127,15 +127,16 @@ class ImageProgress extends Component {
     const { progress, thresholdReached, loading } = this.state;
 
     let style = this.props.style;
-    let content = this.props.children;
+    let children = this.props.children;
+    let progressContent = null;
 
     if ((loading || progress < 1) && thresholdReached) {
       style = style ? [styles.container, style] : styles.container;
       if (renderIndicator) {
-        content = renderIndicator(progress, !loading || !progress);
+        progressContent = renderIndicator(progress, !loading || !progress);
       } else {
         const IndicatorComponent = (typeof indicator === 'function' ? indicator : DefaultIndicator);
-        content = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps} />);
+        progressContent = (<IndicatorComponent progress={progress} indeterminate={!loading || !progress} {...indicatorProps}/>);
       }
     }
     return (
@@ -150,7 +151,8 @@ class ImageProgress extends Component {
         source={source}
         style={style}
       >
-        {content}
+        {progressContent}
+        {children}
       </Image>
     );
   }
