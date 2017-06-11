@@ -5,7 +5,7 @@ import React, {
 
 import {
   ActivityIndicator,
-  Image,
+  ImageBackground,
   View,
   StyleSheet,
   Platform,
@@ -141,7 +141,7 @@ class ImageProgress extends Component {
       }
     }
     return (
-      <Image
+      <ImageBackground
         {...props}
         key={source ? source.uri || source : undefined}
         onLoadStart={this.handleLoadStart}
@@ -153,7 +153,7 @@ class ImageProgress extends Component {
         style={style}
       >
         {content}
-      </Image>
+      </ImageBackground>
     );
   }
 }
