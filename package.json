@@ -41,5 +41,8 @@
     "babel-eslint": "^6.0.4",
     "eslint": "^2.9.0",
     "eslint-plugin-react": "^5.0.1"
+  },
+  "dependencies": {
+    "prop-types": "^15.5.10"
   }
 }

@@ -1,12 +1,10 @@
-import React, {
-  Component,
-  PropTypes,
-} from 'react';
-
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   ActivityIndicator,
   Image,
   StyleSheet,
+  View,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -123,11 +121,11 @@ class ImageProgress extends Component {
   };
 
   render() {
-    const { indicator, indicatorProps, renderIndicator, source, threshold, ...props } = this.props;
+    const { children, indicator, indicatorProps, renderIndicator, source, threshold, ...props } = this.props;
     const { progress, thresholdReached, loading } = this.state;
 
     let style = this.props.style;
-    let content = this.props.children;
+    let content = children;
 
     if ((loading || progress < 1) && thresholdReached) {
       style = style ? [styles.container, style] : styles.container;
@@ -139,21 +137,23 @@ class ImageProgress extends Component {
       }
     }
     return (
-      <Image
-        {...props}
-        key={source ? source.uri || source : undefined}
-        onLoadStart={this.handleLoadStart}
-        onProgress={this.handleProgress}
-        onError={this.handleError}
-        onLoad={this.handleLoad}
-        ref={this.handleRef}
-        source={source}
-        style={style}
-      >
+      <View style={style}>
+        <Image
+          {...props}
+          key={source ? source.uri || source : undefined}
+          onLoadStart={this.handleLoadStart}
+          onProgress={this.handleProgress}
+          onError={this.handleError}
+          onLoad={this.handleLoad}
+          ref={this.handleRef}
+          source={source}
+          style={StyleSheet.absoluteFill}
+        />
         {content}
-      </Image>
+      </View>
     );
   }
 }
 
+// For backwards compatibility
 module.exports = ImageProgress;
