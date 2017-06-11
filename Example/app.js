@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import Image from 'react-native-image-progress';
 import * as Progress from 'react-native-progress';
@@ -32,35 +27,30 @@ const styles = StyleSheet.create({
   },
 });
 
+const pseudoRandom = () => 0.5 - Math.random();
+
+const getRandomIndicator = () => INDICATORS.slice(0).sort(pseudoRandom)[0];
+
+const getRandomImage = excludeUri => {
+  const imageUrl = IMAGES.filter(
+    uri => !excludeUri || excludeUri.indexOf(uri) !== 0,
+  ).sort(pseudoRandom)[0];
+  return `${imageUrl}?rand=${Date.now()}`;
+};
+
+const getRandomState = excludeUri => ({
+  imageUri: getRandomImage(excludeUri),
+  indicator: getRandomIndicator(),
+});
+
 export default class Example extends Component {
   constructor(props) {
     super(props);
-    this.state = this.getRandomState();
-  }
-
-  getRandomState() {
-    return {
-      imageUri: this.getRandomImage(),
-      indicator: this.getRandomIndicator(),
-    };
-  }
-
-  getRandomIndicator() {
-    return INDICATORS.slice(0).sort( () => { return 0.5 - Math.random(); } )[0];
-  }
-
-  getRandomImage() {
-    let images = IMAGES.slice(0);
-
-    // Filter out the current one since we don't want to see that one again
-    if (this.state && typeof this.state.image === 'object') {
-      images = images.filter((uri) => this.state.imageUri.indexOf(uri) !== 0 );
-    }
-    return images.sort( () => { return 0.5 - Math.random(); } )[0] + '?rand=' + Date.now();
+    this.state = getRandomState();
   }
 
   randomize = () => {
-    this.setState(this.getRandomState());
+    this.setState(getRandomState(this.state.imageUri));
   };
 
   render() {
