@@ -164,7 +164,7 @@ export default class ImageProgress extends Component {
           onError={this.handleError}
           onLoad={this.handleLoad}
           source={source}
-          style={StyleSheet.absoluteFill}
+          style={[StyleSheet.absoluteFill, props.style]}
         />
         {content}
       </View>
