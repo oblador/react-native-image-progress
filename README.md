@@ -65,6 +65,18 @@ import Progress from 'react-native-progress';
   }}/>
 ```
 
+## Using a custom image component
+
+For some use cases such as better GIF support or more granular control over caching you might want to use a custom image component, to do this simply use the `createImageProgress` function: 
+
+```js
+import { createImageProgress } from 'react-native-image-progress';
+import FastImage from 'react-native-fast-image';
+
+const Image = createImageProgress(FastImage);
+``` 
+
+*NOTE: the alternative image implementation must conform to the core `Image` component life cycle props, notably `onProgress`, `onError`, `onLoad` and `onLoadStart`.*
 
 ## License
 
