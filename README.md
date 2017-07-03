@@ -1,4 +1,4 @@
-# react-native-image-progress
+# react-native-image-progress [![npm version](https://img.shields.io/npm/v/react-native-image-progress.svg?style=flat)](https://www.npmjs.com/package/react-native-image-progress)
 *Progress indicator for networked images in React Native*
 
 ## Installation
