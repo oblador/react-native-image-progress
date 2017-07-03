@@ -26,6 +26,9 @@ export default class ImageProgress extends Component {
     threshold: 50,
   };
 
+  static prefetch = Image.prefetch
+  static getSize = Image.getSize
+
   constructor(props) {
     super(props);
 
