@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
+  indicatorContainer: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -16,6 +17,7 @@ export const createImageProgress = ImageComponent =>
     static propTypes = {
       children: PropTypes.node,
       indicator: PropTypes.func,
+      indicatorContainerStyle: PropTypes.any,
       indicatorProps: PropTypes.object,
       renderIndicator: PropTypes.func,
       source: PropTypes.any,
@@ -24,6 +26,7 @@ export const createImageProgress = ImageComponent =>
     };
 
     static defaultProps = {
+      indicatorContainerStyle: styles.indicatorContainer,
       threshold: 50,
     };
 
@@ -130,26 +133,26 @@ export const createImageProgress = ImageComponent =>
       const {
         children,
         indicator,
+        indicatorContainerStyle,
         indicatorProps,
         renderIndicator,
         source,
+        style,
         threshold,
         ...props
       } = this.props;
       const { progress, thresholdReached, loading } = this.state;
 
-      let style = this.props.style;
-      let content = children;
+      let indicatorElement;
 
       if ((loading || progress < 1) && thresholdReached) {
-        style = style ? [styles.container, style] : styles.container;
         if (renderIndicator) {
-          content = renderIndicator(progress, !loading || !progress);
+          indicatorElement = renderIndicator(progress, !loading || !progress);
         } else {
           const IndicatorComponent = typeof indicator === 'function'
             ? indicator
             : DefaultIndicator;
-          content = (
+          indicatorElement = (
             <IndicatorComponent
               progress={progress}
               indeterminate={!loading || !progress}
@@ -157,7 +160,11 @@ export const createImageProgress = ImageComponent =>
             />
           );
         }
+        indicatorElement = (
+          <View style={indicatorContainerStyle}>{indicatorElement}</View>
+        );
       }
+
       return (
         <View style={style} ref={this.handleRef}>
           <ImageComponent
@@ -170,7 +177,8 @@ export const createImageProgress = ImageComponent =>
             source={source}
             style={StyleSheet.absoluteFill}
           />
-          {content}
+          {indicatorElement}
+          {children}
         </View>
       );
     }
