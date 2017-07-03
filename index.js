@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 
 const styles = StyleSheet.create({
-  indicatorContainer: {
+  centered: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
@@ -16,17 +16,20 @@ export const createImageProgress = ImageComponent =>
   class ImageProgress extends Component {
     static propTypes = {
       children: PropTypes.node,
+      errorContainerStyle: PropTypes.any,
       indicator: PropTypes.func,
       indicatorContainerStyle: PropTypes.any,
       indicatorProps: PropTypes.object,
       renderIndicator: PropTypes.func,
+      renderError: PropTypes.func,
       source: PropTypes.any,
       style: PropTypes.any,
       threshold: PropTypes.number.isRequired,
     };
 
     static defaultProps = {
-      indicatorContainerStyle: styles.indicatorContainer,
+      indicatorContainerStyle: styles.centered,
+      errorContainerStyle: styles.centered,
       threshold: 50,
     };
 
@@ -37,6 +40,7 @@ export const createImageProgress = ImageComponent =>
       super(props);
 
       this.state = {
+        error: null,
         loading: false,
         progress: 0,
         thresholdReached: !props.threshold,
@@ -59,6 +63,7 @@ export const createImageProgress = ImageComponent =>
         this.props.source.uri !== props.source.uri
       ) {
         this.setState({
+          error: null,
           loading: false,
           progress: 0,
         });
@@ -91,6 +96,7 @@ export const createImageProgress = ImageComponent =>
     handleLoadStart = () => {
       if (!this.state.loading && this.state.progress !== 1) {
         this.setState({
+          error: null,
           loading: true,
           progress: 0,
         });
@@ -115,6 +121,7 @@ export const createImageProgress = ImageComponent =>
     handleError = event => {
       this.setState({
         loading: false,
+        error: event.nativeEvent,
       });
       this.bubbleEvent('onError', event);
     };
@@ -122,6 +129,7 @@ export const createImageProgress = ImageComponent =>
     handleLoad = event => {
       if (this.state.progress !== 1) {
         this.setState({
+          error: null,
           loading: false,
           progress: 1,
         });
@@ -132,20 +140,28 @@ export const createImageProgress = ImageComponent =>
     render() {
       const {
         children,
+        errorContainerStyle,
         indicator,
         indicatorContainerStyle,
         indicatorProps,
+        renderError,
         renderIndicator,
         source,
         style,
         threshold,
         ...props
       } = this.props;
-      const { progress, thresholdReached, loading } = this.state;
+      const { progress, thresholdReached, loading, error } = this.state;
 
       let indicatorElement;
 
-      if ((loading || progress < 1) && thresholdReached) {
+      if (error) {
+        if (renderError) {
+          indicatorElement = (
+            <View style={errorContainerStyle}>{renderError(error)}</View>
+          );
+        }
+      } else if ((loading || progress < 1) && thresholdReached) {
         if (renderIndicator) {
           indicatorElement = renderIndicator(progress, !loading || !progress);
         } else {

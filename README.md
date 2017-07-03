@@ -33,6 +33,7 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 |**`indicator`**|A component to display progress, will be passed a `progress` prop with a number between 0 and 1 and `indeterminate` a boolean wether or not component has started recieveing data.|`ActivityIndicator`|
 |**`indicatorProps`**|An object of props being passed to the `indicator` component. To disable indeterminate state, pass `{indeterminate: false}`.|*None*|
 |**`renderIndicator(progress, indeterminate)`**|Function to render your own custom indicator, useful for something very simple. If not, consider breaking it out to a separate component and use `indicator` prop instead.|*None*|
+|**`renderError(error)`**|Function to render your own custom error message or image fallback.|*None*|
 |**`threshold`**|Number of milliseconds after mount to wait before displaying the indicator. Basically a workaround for cached images not to flash a spinner. Set to `0` to disable.|`50`|
 
 Note: `onLoad*` events are bubbled up, so if you wan't to do some custom thing when the image is loaded for example. 
