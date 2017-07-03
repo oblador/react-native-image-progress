@@ -4,7 +4,7 @@
 ## Installation
 
 ```
-npm install --save react-native-image-progress
+yarn add react-native-image-progress
 ```
 
 **Note: Progress indicators has been broken out to a separate component; [react-native-progress](https://github.com/oblador/react-native-progress). To use them, please follow installation instructions for that package.**
