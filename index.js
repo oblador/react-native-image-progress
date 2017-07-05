@@ -151,6 +151,15 @@ export const createImageProgress = ImageComponent =>
         threshold,
         ...props
       } = this.props;
+
+      if (!source || !source.uri) {
+        // This is not a networked asset so fallback to regular image
+        return (
+          <ImageComponent source={source} style={style} {...props}>
+            {children}
+          </ImageComponent>
+        );
+      }
       const { progress, thresholdReached, loading, error } = this.state;
 
       let indicatorElement;
@@ -185,7 +194,7 @@ export const createImageProgress = ImageComponent =>
         <View style={style} ref={this.handleRef}>
           <ImageComponent
             {...props}
-            key={source ? source.uri || source : undefined}
+            key={source && source.uri}
             onLoadStart={this.handleLoadStart}
             onProgress={this.handleProgress}
             onError={this.handleError}
