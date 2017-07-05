@@ -1,6 +1,6 @@
 {
   "name": "react-native-image-progress",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Progress indicator for networked images, supports progress bar and spinner",
   "main": "index.js",
   "scripts": {
