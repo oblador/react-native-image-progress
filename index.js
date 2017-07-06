@@ -24,6 +24,7 @@ export const createImageProgress = ImageComponent =>
       renderError: PropTypes.func,
       source: PropTypes.any,
       style: PropTypes.any,
+      styleView: PropTypes.any,
       threshold: PropTypes.number.isRequired,
     };
 
@@ -148,6 +149,7 @@ export const createImageProgress = ImageComponent =>
         renderIndicator,
         source,
         style,
+        styleView,
         threshold,
         ...props
       } = this.props;
@@ -191,7 +193,7 @@ export const createImageProgress = ImageComponent =>
       }
 
       return (
-        <View style={style} ref={this.handleRef}>
+        <View style={styleView} ref={this.handleRef}>
           <ImageComponent
             {...props}
             key={source && source.uri}
@@ -200,7 +202,7 @@ export const createImageProgress = ImageComponent =>
             onError={this.handleError}
             onLoad={this.handleLoad}
             source={source}
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill, style]}
           />
           {indicatorElement}
           {children}
