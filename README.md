@@ -31,6 +31,7 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 | Prop | Description | Default |
 |---|---|---|
 |**`indicator`**|A component to display progress, will be passed a `progress` prop with a number between 0 and 1 and `indeterminate` a boolean wether or not component has started recieveing data.|`ActivityIndicator`|
+|**`imageProps`**|An object containing style that will be applied to the wrapped image.|*absoluteFillObject* (position: 'absolute', top: 0, bottom: 0, left: 0, right: 0)|
 |**`indicatorProps`**|An object of props being passed to the `indicator` component. To disable indeterminate state, pass `{indeterminate: false}`.|*None*|
 |**`renderIndicator(progress, indeterminate)`**|Function to render your own custom indicator, useful for something very simple. If not, consider breaking it out to a separate component and use `indicator` prop instead.|*None*|
 |**`renderError(error)`**|Function to render your own custom error message or image fallback.|*None*|
@@ -59,6 +60,9 @@ import Progress from 'react-native-progress';
     borderWidth: 0,
     color: 'rgba(150, 150, 150, 1)',
     unfilledColor: 'rgba(200, 200, 200, 0.2)'
+  }}
+  imageProps:{{
+    resizeMode: 'contain'
   }}
   style={{
     width: 320,
