@@ -18,6 +18,9 @@ import ProgressBar from 'react-native-progress/Bar';
 <Image 
   source={{ uri: 'http://loremflickr.com/640/480/dog' }} 
   indicator={ProgressBar} 
+  imageProps:{{
+    resizeMode: 'contain'
+  }}
   style={{
     width: 320, 
     height: 240, 
@@ -60,9 +63,6 @@ import Progress from 'react-native-progress';
     borderWidth: 0,
     color: 'rgba(150, 150, 150, 1)',
     unfilledColor: 'rgba(200, 200, 200, 0.2)'
-  }}
-  imageProps:{{
-    resizeMode: 'contain'
   }}
   style={{
     width: 320,
