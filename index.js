@@ -24,7 +24,7 @@ export const createImageProgress = ImageComponent =>
       renderError: PropTypes.func,
       source: PropTypes.any,
       style: PropTypes.any,
-      imageStyle: PropTypes.any,
+      imageStyle: PropTypes.object,
       threshold: PropTypes.number.isRequired,
     };
 
@@ -202,8 +202,7 @@ export const createImageProgress = ImageComponent =>
             onError={this.handleError}
             onLoad={this.handleLoad}
             source={source}
-            imageStyle={imageStyle}
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill, imageStyle]}
           />
           {indicatorElement}
           {children}
