@@ -1,10 +1,10 @@
-# react-native-image-progress
+# react-native-image-progress [![npm version](https://img.shields.io/npm/v/react-native-image-progress.svg?style=flat)](https://www.npmjs.com/package/react-native-image-progress)
 *Progress indicator for networked images in React Native*
 
 ## Installation
 
 ```
-npm install --save react-native-image-progress
+yarn add react-native-image-progress
 ```
 
 **Note: Progress indicators has been broken out to a separate component; [react-native-progress](https://github.com/oblador/react-native-progress). To use them, please follow installation instructions for that package.**
@@ -33,6 +33,7 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 |**`indicator`**|A component to display progress, will be passed a `progress` prop with a number between 0 and 1 and `indeterminate` a boolean wether or not component has started recieveing data.|`ActivityIndicator`|
 |**`indicatorProps`**|An object of props being passed to the `indicator` component. To disable indeterminate state, pass `{indeterminate: false}`.|*None*|
 |**`renderIndicator(progress, indeterminate)`**|Function to render your own custom indicator, useful for something very simple. If not, consider breaking it out to a separate component and use `indicator` prop instead.|*None*|
+|**`renderError(error)`**|Function to render your own custom error message or image fallback.|*None*|
 |**`threshold`**|Number of milliseconds after mount to wait before displaying the indicator. Basically a workaround for cached images not to flash a spinner. Set to `0` to disable.|`50`|
 
 Note: `onLoad*` events are bubbled up, so if you wan't to do some custom thing when the image is loaded for example. 
@@ -65,6 +66,18 @@ import Progress from 'react-native-progress';
   }}/>
 ```
 
+## Using a custom image component
+
+For some use cases such as better GIF support or more granular control over caching you might want to use a custom image component, to do this simply use the `createImageProgress` function: 
+
+```js
+import { createImageProgress } from 'react-native-image-progress';
+import FastImage from 'react-native-fast-image';
+
+const Image = createImageProgress(FastImage);
+``` 
+
+*NOTE: the alternative image implementation must conform to the core `Image` component life cycle props, notably `onProgress`, `onError`, `onLoad` and `onLoadStart`.*
 
 ## License
 
