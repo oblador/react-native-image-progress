@@ -82,6 +82,12 @@ export const createImageProgress = ImageComponent =>
       }
     }
 
+    measure(cb) {
+      if (this.ref) {
+        this.ref.measure(cb);
+      }
+    }
+
     ref = null;
     handleRef = ref => {
       this.ref = ref;
