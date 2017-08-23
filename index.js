@@ -137,6 +137,15 @@ export const createImageProgress = ImageComponent =>
       this.bubbleEvent('onLoad', event);
     };
 
+    onLoadEnd = event => {
+      this.setState({
+        error: null,
+        loading: false,
+        progress: 1,
+      });
+      this.bubbleEvent('onLoadEnd', event);
+    }
+
     render() {
       const {
         children,
@@ -199,6 +208,7 @@ export const createImageProgress = ImageComponent =>
             onProgress={this.handleProgress}
             onError={this.handleError}
             onLoad={this.handleLoad}
+            onLoadEnd={this.onLoadEnd}
             source={source}
             style={StyleSheet.absoluteFill}
           />
