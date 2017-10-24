@@ -14,7 +14,7 @@ yarn add react-native-image-progress
 
 ```js
 import Image from 'react-native-image-progress';
-import ProgressBar from 'react-native-progress/Bar';
+import ProgressBar from 'react-native-progress';
 <Image 
   source={{ uri: 'http://loremflickr.com/640/480/dog' }} 
   indicator={ProgressBar} 
