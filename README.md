@@ -36,7 +36,7 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 |**`renderError(error)`**|Function to render your own custom error message or image fallback.|*None*|
 |**`threshold`**|Number of milliseconds after mount to wait before displaying the indicator. Basically a workaround for cached images not to flash a spinner. Set to `0` to disable.|`50`|
 
-Note: `onLoad*` events are bubbled up, so if you wan't to do some custom thing when the image is loaded for example. 
+Note: `onLoad*` events are bubbled up, so if you want to do some custom thing when the image is loaded for example. 
 
 ## Demo
 
