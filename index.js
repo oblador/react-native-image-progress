@@ -196,7 +196,7 @@ export const createImageProgress = ImageComponent =>
         );
       }
 
-      return (
+      const renderDefault = (
         <View style={style} ref={this.handleRef}>
           <ImageComponent
             {...props}
@@ -206,11 +206,32 @@ export const createImageProgress = ImageComponent =>
             onError={this.handleError}
             onLoad={this.handleLoad}
             source={source}
-            style={StyleSheet.absoluteFill}
+            style={[
+              StyleSheet.absoluteFill,
+              style,
+            ]}
           />
           {indicatorElement}
-          {children}
         </View>
+      );
+
+      const renderWrapper = (
+        <ImageComponent
+          {...props}
+          key={source && source.uri}
+          onLoadStart={this.handleLoadStart}
+          onProgress={this.handleProgress}
+          onError={this.handleError}
+          onLoad={this.handleLoad}
+          source={source}
+        >
+          {indicatorElement}
+          {children}
+        </ImageComponent>
+      );
+
+      return (
+        children ? renderWrapper : renderDefault
       );
     }
   };
