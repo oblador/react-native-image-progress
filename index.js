@@ -216,7 +216,7 @@ export const createImageProgress = ImageComponent =>
             onLoad={this.handleLoad}
             onLoadEnd={this.onLoadEnd}
             source={source}
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill, style]}
           />
           {indicatorElement}
           {children}
