@@ -159,7 +159,7 @@ export const createImageProgress = ImageComponent =>
             <ImageComponent
               {...props}
               source={source}
-              style={StyleSheet.absoluteFill}
+              style={[StyleSheet.absoluteFill, imageStyle]}
             />
             {children}
           </View>
