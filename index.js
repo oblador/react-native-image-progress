@@ -172,9 +172,14 @@ export const createImageProgress = ImageComponent =>
       if (!source || !source.uri) {
         // This is not a networked asset so fallback to regular image
         return (
-          <ImageComponent source={source} style={style} {...props}>
+          <View style={style} ref={this.handleRef}>
+            <ImageComponent
+              {...props}
+              source={source}
+              style={[StyleSheet.absoluteFill, imageStyle]}
+            />
             {children}
-          </ImageComponent>
+          </View>
         );
       }
       const { progress, thresholdReached, loading, error } = this.state;
