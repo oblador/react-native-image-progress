@@ -20,6 +20,7 @@ export const createImageProgress = ImageComponent =>
       indicator: PropTypes.func,
       indicatorContainerStyle: PropTypes.any,
       indicatorProps: PropTypes.object,
+      imageProps: PropTypes.object,
       renderIndicator: PropTypes.func,
       renderError: PropTypes.func,
       source: PropTypes.any,
@@ -31,6 +32,7 @@ export const createImageProgress = ImageComponent =>
       indicatorContainerStyle: styles.centered,
       errorContainerStyle: styles.centered,
       threshold: 50,
+      imageProps: StyleSheet.absoluteFillObject,
     };
 
     static prefetch = Image.prefetch;
@@ -164,8 +166,11 @@ export const createImageProgress = ImageComponent =>
         source,
         style,
         threshold,
+        imageProps,
         ...props
       } = this.props;
+
+      const imageStyle = Object.assign({}, StyleSheet.absoluteFillObject, imageProps);
 
       if (!source || !source.uri) {
         // This is not a networked asset so fallback to regular image
@@ -216,7 +221,7 @@ export const createImageProgress = ImageComponent =>
             onLoad={this.handleLoad}
             onLoadEnd={this.onLoadEnd}
             source={source}
-            style={StyleSheet.absoluteFill}
+            style={imageStyle}
           />
           {indicatorElement}
           {children}
