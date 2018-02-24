@@ -30,6 +30,7 @@ Any [`Image` property](http://facebook.github.io/react-native/docs/image.html) a
 
 | Prop | Description | Default |
 |---|---|---|
+|**`imageStyle`**|Styles applied to the inner image component.|*None*|
 |**`indicator`**|A component to display progress, will be passed a `progress` prop with a number between 0 and 1 and `indeterminate` a boolean wether or not component has started recieveing data.|`ActivityIndicator`|
 |**`indicatorProps`**|An object of props being passed to the `indicator` component. To disable indeterminate state, pass `{indeterminate: false}`.|*None*|
 |**`renderIndicator(progress, indeterminate)`**|Function to render your own custom indicator, useful for something very simple. If not, consider breaking it out to a separate component and use `indicator` prop instead.|*None*|
