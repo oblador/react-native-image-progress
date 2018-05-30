@@ -1,5 +1,20 @@
 language: node_js
 node_js:
-  - "5"
+- stable
+cache:
+  yarn: true
+  directories:
+  - node_modules
+install:
+- yarn
 script:
-  - npm test
+- yarn test
+deploy:
+  provider: npm
+  email: joel@oblador.se
+  api_key:
+    secure: "AjuViYEVHB0kJOP2N/7gXSQiji3rGOeaM2juNDnxvdhoSf91aanKSMQp8Mqt3Oug0vxnWPDuKMvc2M2PxQcyiaN4uNKxIJ2+nl3B/mhBBBvWYbZu5H7KCoL/9UJ+5cSELOTh44C994r1g6AZf2jgaPnWo+bMKBUuuO98B+u6gT/oE+tITJkhc5JPyXP13JiB0gx715utKkXJ3UVKk7H/emWQlOTKLwhTKDMuu2MtEgol3B6yGbA4x+tccEjs6nxUkI9R/b48KUKpXtMosBRdXyWPKT0xkDqGEpmMAVWwDrzuG2yt627WfeVIFumS5lCQCJqusKkUtKh1rA30fVTU9cmcszaqkT+oRtLpXmroxyzBNCJoMFoHGFaEY6mhWSmrLYRMzpyl8v5A6hZNI9Y/kElHgTnbn5HD7is6vQdVRwk8wlUmPxYErDHN6+/GfqBIZAqUS65safMUqs1R9YZTq4UqBM2aO8iPJ3Rg9PVb9T1+iuEYKhKFUc8TNuqCsb+5LYUufdA9KNCDMpO7sUzQlIhqrtQxHL1ZtDOI+vSh4GlqLAVZ9PbdMfK4OxZKxUlBGQjNm3BZJhFVQ4rPZVXNkXH5ZXQPiTGOtTR8giLZ45B9iRcH6xLDzf33EgSEbyFsZpi3KXuVTyBTSGAWeCt50rwq7KI2ynTUnyFa1woDvY8="
+  on:
+    tags: true
+    repo: oblador/react-native-image-progress
+    condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+.*$"
