@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "eslint index.js",
-    "format": "./node_modules/.bin/prettier --single-quote --trailing-comma all --write {,Example/}*.js"
+    "format": "./node_modules/.bin/prettier --write {,Example/}*.js"
   },
   "keywords": [
     "react-native",
@@ -49,6 +49,6 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
-    "prettier": "^1.4.4"
+    "prettier": "^1.13.3"
   }
 }

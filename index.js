@@ -150,7 +150,7 @@ export const createImageProgress = ImageComponent =>
         progress: 1,
       });
       this.bubbleEvent('onLoadEnd', event);
-    }
+    };
 
     render() {
       const {
@@ -195,9 +195,8 @@ export const createImageProgress = ImageComponent =>
         if (renderIndicator) {
           indicatorElement = renderIndicator(progress, !loading || !progress);
         } else {
-          const IndicatorComponent = typeof indicator === 'function'
-            ? indicator
-            : DefaultIndicator;
+          const IndicatorComponent =
+            typeof indicator === 'function' ? indicator : DefaultIndicator;
           indicatorElement = (
             <IndicatorComponent
               progress={progress}
