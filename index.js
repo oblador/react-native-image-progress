@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
 
 const DefaultIndicator = ActivityIndicator;
 
+const getSourceKey = source => (source && source.uri) || String(source);
+
 export const createImageProgress = ImageComponent =>
   class ImageProgress extends Component {
     static propTypes = {
@@ -25,7 +27,7 @@ export const createImageProgress = ImageComponent =>
       source: PropTypes.any,
       style: PropTypes.any,
       imageStyle: PropTypes.object,
-      threshold: PropTypes.number.isRequired,
+      threshold: PropTypes.number,
     };
 
     static defaultProps = {
@@ -37,10 +39,24 @@ export const createImageProgress = ImageComponent =>
     static prefetch = Image.prefetch;
     static getSize = Image.getSize;
 
+    static getDerivedStateFromProps(props, state) {
+      const sourceKey = getSourceKey(props.source);
+      if (sourceKey !== state.sourceKey) {
+        return {
+          sourceKey,
+          error: null,
+          loading: false,
+          progress: 0,
+        };
+      }
+      return null;
+    }
+
     constructor(props) {
       super(props);
 
       this.state = {
+        sourceKey: getSourceKey(props.source),
         error: null,
         loading: false,
         progress: 0,
@@ -54,20 +70,6 @@ export const createImageProgress = ImageComponent =>
           this.setState({ thresholdReached: true });
           this.thresholdTimer = null;
         }, this.props.threshold);
-      }
-    }
-
-    componentWillReceiveProps(props) {
-      if (
-        !this.props.source ||
-        !props.source ||
-        this.props.source.uri !== props.source.uri
-      ) {
-        this.setState({
-          error: null,
-          loading: false,
-          progress: 0,
-        });
       }
     }
 
@@ -144,7 +146,7 @@ export const createImageProgress = ImageComponent =>
       this.bubbleEvent('onLoad', event);
     };
 
-    onLoadEnd = event => {
+    handleLoadEnd = event => {
       this.setState({
         loading: false,
         progress: 1,
@@ -181,7 +183,13 @@ export const createImageProgress = ImageComponent =>
           </View>
         );
       }
-      const { progress, thresholdReached, loading, error } = this.state;
+      const {
+        progress,
+        sourceKey,
+        thresholdReached,
+        loading,
+        error,
+      } = this.state;
 
       let indicatorElement;
 
@@ -214,12 +222,12 @@ export const createImageProgress = ImageComponent =>
         <View style={style} ref={this.handleRef}>
           <ImageComponent
             {...props}
-            key={source && source.uri}
+            key={sourceKey}
             onLoadStart={this.handleLoadStart}
             onProgress={this.handleProgress}
             onError={this.handleError}
             onLoad={this.handleLoad}
-            onLoadEnd={this.onLoadEnd}
+            onLoadEnd={this.handleLoadEnd}
             source={source}
             style={[StyleSheet.absoluteFill, imageStyle]}
           />
