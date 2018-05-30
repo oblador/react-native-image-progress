@@ -146,7 +146,6 @@ export const createImageProgress = ImageComponent =>
 
     onLoadEnd = event => {
       this.setState({
-        error: null,
         loading: false,
         progress: 1,
       });
