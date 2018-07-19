@@ -26,7 +26,7 @@ export const createImageProgress = ImageComponent =>
       renderError: PropTypes.func,
       source: PropTypes.any,
       style: PropTypes.any,
-      imageStyle: PropTypes.object,
+      imageStyle: PropTypes.any,
       threshold: PropTypes.number,
     };
 
