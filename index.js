@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 
@@ -14,228 +14,203 @@ const DefaultIndicator = ActivityIndicator;
 
 const getSourceKey = source => (source && source.uri) || String(source);
 
-export const createImageProgress = ImageComponent =>
-  class ImageProgress extends Component {
-    static propTypes = {
-      children: PropTypes.node,
-      errorContainerStyle: PropTypes.any,
-      indicator: PropTypes.func,
-      indicatorContainerStyle: PropTypes.any,
-      indicatorProps: PropTypes.object,
-      renderIndicator: PropTypes.func,
-      renderError: PropTypes.func,
-      source: PropTypes.any,
-      style: PropTypes.any,
-      imageStyle: PropTypes.any,
-      threshold: PropTypes.number,
-    };
+export const createImageProgress = ImageComponent => {
+  const ReactNativeImageProgress = props => {
+    const {
+      children,
+      errorContainerStyle,
+      indicator,
+      indicatorContainerStyle,
+      indicatorProps,
+      renderError,
+      renderIndicator,
+      source,
+      style,
+      threshold,
+      imageStyle,
+      ...rest
+    } = props;
 
-    static defaultProps = {
-      indicatorContainerStyle: styles.centered,
-      errorContainerStyle: styles.centered,
-      threshold: 50,
-    };
+    const [sourceKey, setSourceKey] = useState(getSourceKey(source));
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [thresholdReached, setThresholdReached] = useState(!threshold);
+    const ref = useRef(null);
 
-    static prefetch = Image.prefetch;
-    static getSize = Image.getSize;
+    useEffect(
+      () => {
+        setSourceKey(getSourceKey(source));
+        setError(null);
+        setLoading(false);
+        setProgress(0);
+      },
+      [source],
+    );
 
-    static getDerivedStateFromProps(props, state) {
-      const sourceKey = getSourceKey(props.source);
-      if (sourceKey !== state.sourceKey) {
-        return {
-          sourceKey,
-          error: null,
-          loading: false,
-          progress: 0,
+    useEffect(
+      () => {
+        let thresholdTimer;
+        thresholdTimer = setTimeout(() => {
+          setThresholdReached(true);
+          thresholdTimer = null;
+        }, threshold);
+
+        return () => {
+          if (thresholdTimer) {
+            clearTimeout(thresholdTimer);
+          }
         };
+      },
+      [threshold],
+    );
+
+    // eslint-disable-next-line no-unused-vars
+    const setNativeProps = nativeProps => {
+      if (ref && ref.current) {
+        ref.current.setNativeProps(nativeProps);
       }
-      return null;
-    }
-
-    constructor(props) {
-      super(props);
-
-      this.state = {
-        sourceKey: getSourceKey(props.source),
-        error: null,
-        loading: false,
-        progress: 0,
-        thresholdReached: !props.threshold,
-      };
-    }
-
-    componentDidMount() {
-      if (this.props.threshold) {
-        this.thresholdTimer = setTimeout(() => {
-          this.setState({ thresholdReached: true });
-          this.thresholdTimer = null;
-        }, this.props.threshold);
-      }
-    }
-
-    componentWillUnmount() {
-      if (this.thresholdTimer) {
-        clearTimeout(this.thresholdTimer);
-      }
-    }
-
-    setNativeProps(nativeProps) {
-      if (this.ref) {
-        this.ref.setNativeProps(nativeProps);
-      }
-    }
-
-    measure(cb) {
-      if (this.ref) {
-        this.ref.measure(cb);
-      }
-    }
-
-    ref = null;
-    handleRef = ref => {
-      this.ref = ref;
     };
 
-    bubbleEvent(propertyName, event) {
-      if (typeof this.props[propertyName] === 'function') {
-        this.props[propertyName](event);
+    // eslint-disable-next-line no-unused-vars
+    const measure = cb => {
+      if (ref && ref.current) {
+        ref.current.measure(cb);
       }
-    }
-
-    handleLoadStart = () => {
-      if (!this.state.loading && this.state.progress !== 1) {
-        this.setState({
-          error: null,
-          loading: true,
-          progress: 0,
-        });
-      }
-      this.bubbleEvent('onLoadStart');
     };
 
-    handleProgress = event => {
-      const progress = event.nativeEvent.loaded / event.nativeEvent.total;
+    const bubbleEvent = (propertyName, event) => {
+      if (typeof props[propertyName] === 'function') {
+        props[propertyName](event);
+      }
+    };
+
+    const handleLoadStart = () => {
+      if (!loading && progress !== 1) {
+        setError(null);
+        setLoading(true);
+        setProgress(0);
+      }
+      bubbleEvent('onLoadStart');
+    };
+
+    const handleProgress = event => {
+      const progressProp = event.nativeEvent.loaded / event.nativeEvent.total;
       // RN is a bit buggy with these events, sometimes a loaded event and then a few
       // 100% progress – sometimes in an infinite loop. So we just assume 100% progress
       // actually means the image is no longer loading
-      if (progress !== this.state.progress && this.state.progress !== 1) {
-        this.setState({
-          loading: progress < 1,
-          progress,
-        });
+      if (progressProp !== progress && progress !== 1) {
+        setLoading(progressProp < 1);
+        setProgress(progressProp);
       }
-      this.bubbleEvent('onProgress', event);
+      bubbleEvent('onProgress', event);
     };
 
-    handleError = event => {
-      this.setState({
-        loading: false,
-        error: event.nativeEvent,
-      });
-      this.bubbleEvent('onError', event);
+    const handleError = event => {
+      setLoading(false);
+      setError(event.nativeEvent);
+      bubbleEvent('onError', event);
     };
 
-    handleLoad = event => {
-      if (this.state.progress !== 1) {
-        this.setState({
-          error: null,
-          loading: false,
-          progress: 1,
-        });
+    const handleLoad = event => {
+      if (progress !== 1) {
+        setError(null);
+        setLoading(false);
+        setProgress(1);
       }
-      this.bubbleEvent('onLoad', event);
+      bubbleEvent('onLoad', event);
     };
 
-    handleLoadEnd = event => {
-      this.setState({
-        loading: false,
-        progress: 1,
-      });
-      this.bubbleEvent('onLoadEnd', event);
+    const handleLoadEnd = event => {
+      setLoading(false);
+      setProgress(1);
+      bubbleEvent('onLoadEnd', event);
     };
 
-    render() {
-      const {
-        children,
-        errorContainerStyle,
-        indicator,
-        indicatorContainerStyle,
-        indicatorProps,
-        renderError,
-        renderIndicator,
-        source,
-        style,
-        threshold,
-        imageStyle,
-        ...props
-      } = this.props;
-
-      if (!source || !source.uri) {
-        // This is not a networked asset so fallback to regular image
-        return (
-          <View style={style} ref={this.handleRef}>
-            <ImageComponent
-              {...props}
-              source={source}
-              style={[StyleSheet.absoluteFill, imageStyle]}
-            />
-            {children}
-          </View>
-        );
-      }
-      const {
-        progress,
-        sourceKey,
-        thresholdReached,
-        loading,
-        error,
-      } = this.state;
-
-      let indicatorElement;
-
-      if (error) {
-        if (renderError) {
-          indicatorElement = (
-            <View style={errorContainerStyle}>{renderError(error)}</View>
-          );
-        }
-      } else if ((loading || progress < 1) && thresholdReached) {
-        if (renderIndicator) {
-          indicatorElement = renderIndicator(progress, !loading || !progress);
-        } else {
-          const IndicatorComponent =
-            typeof indicator === 'function' ? indicator : DefaultIndicator;
-          indicatorElement = (
-            <IndicatorComponent
-              progress={progress}
-              indeterminate={!loading || !progress}
-              {...indicatorProps}
-            />
-          );
-        }
-        indicatorElement = (
-          <View style={indicatorContainerStyle}>{indicatorElement}</View>
-        );
-      }
-
+    if (!source || !source.uri) {
+      // This is not a networked asset so fallback to regular image
       return (
-        <View style={style} ref={this.handleRef}>
+        <View style={style} ref={ref}>
           <ImageComponent
-            {...props}
-            key={sourceKey}
-            onLoadStart={this.handleLoadStart}
-            onProgress={this.handleProgress}
-            onError={this.handleError}
-            onLoad={this.handleLoad}
-            onLoadEnd={this.handleLoadEnd}
+            {...rest}
             source={source}
             style={[StyleSheet.absoluteFill, imageStyle]}
           />
-          {indicatorElement}
           {children}
         </View>
       );
     }
+
+    let indicatorElement;
+
+    if (error) {
+      if (renderError) {
+        indicatorElement = (
+          <View style={errorContainerStyle}>{renderError(error)}</View>
+        );
+      }
+    } else if ((loading || progress < 1) && thresholdReached) {
+      if (renderIndicator) {
+        indicatorElement = renderIndicator(progress, !loading || !progress);
+      } else {
+        const IndicatorComponent =
+          typeof indicator === 'function' ? indicator : DefaultIndicator;
+        indicatorElement = (
+          <IndicatorComponent
+            progress={progress}
+            indeterminate={!loading || !progress}
+            {...indicatorProps}
+          />
+        );
+      }
+      indicatorElement = (
+        <View style={indicatorContainerStyle}>{indicatorElement}</View>
+      );
+    }
+
+    return (
+      <View style={style} ref={ref}>
+        <ImageComponent
+          {...rest}
+          key={sourceKey}
+          onLoadStart={handleLoadStart}
+          onProgress={handleProgress}
+          onError={handleError}
+          onLoad={handleLoad}
+          onLoadEnd={handleLoadEnd}
+          source={source}
+          style={[StyleSheet.absoluteFill, imageStyle]}
+        />
+        {indicatorElement}
+        {children}
+      </View>
+    );
   };
+
+  ReactNativeImageProgress.propTypes = {
+    children: PropTypes.node,
+    errorContainerStyle: PropTypes.any,
+    indicator: PropTypes.func,
+    indicatorContainerStyle: PropTypes.any,
+    indicatorProps: PropTypes.object,
+    renderIndicator: PropTypes.func,
+    renderError: PropTypes.func,
+    source: PropTypes.any,
+    style: PropTypes.any,
+    imageStyle: PropTypes.any,
+    threshold: PropTypes.number,
+  };
+
+  ReactNativeImageProgress.defaultProps = {
+    indicatorContainerStyle: styles.centered,
+    errorContainerStyle: styles.centered,
+    threshold: 50,
+  };
+
+  ReactNativeImageProgress.prefetch = Image.prefetch;
+  ReactNativeImageProgress.getSize = Image.getSize;
+
+  return ReactNativeImageProgress;
+};
 
 export default createImageProgress(Image);
