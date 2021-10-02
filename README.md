@@ -80,7 +80,10 @@ const Image = createImageProgress(FastImage);
 
 *NOTE: the alternative image implementation must conform to the core `Image` component life cycle props, notably `onProgress`, `onError`, `onLoad` and `onLoadStart`.*
 
+### In this version the package is re-written for latest ReactJS version 17.*.
+
 ## License
 
 [MIT License](http://opensource.org/licenses/mit-license.html). © Joel Arvidsson
+
 
