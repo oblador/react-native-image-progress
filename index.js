@@ -40,16 +40,26 @@ export const createImageProgress = ImageComponent =>
     static getSize = Image.getSize;
 
     static getDerivedStateFromProps(props, state) {
+      let update = null;
       const sourceKey = getSourceKey(props.source);
+
       if (sourceKey !== state.sourceKey) {
-        return {
+        update = {
           sourceKey,
           error: null,
           loading: false,
           progress: 0,
         };
       }
-      return null;
+
+      if (props.imageStyle !== state.imageStyle[1]) {
+        update = {
+          ...update,
+          imageStyle: [StyleSheet.absoluteFill, props.imageStyle],
+        };
+      }
+
+      return update;
     }
 
     constructor(props) {
@@ -61,6 +71,7 @@ export const createImageProgress = ImageComponent =>
         loading: false,
         progress: 0,
         thresholdReached: !props.threshold,
+        imageStyle: [StyleSheet.absoluteFill, props.imageStyle],
       };
     }
 
@@ -166,19 +177,15 @@ export const createImageProgress = ImageComponent =>
         source,
         style,
         threshold,
-        imageStyle,
         ...props
       } = this.props;
+      const { imageStyle } = this.state;
 
       if (!source || !source.uri) {
         // This is not a networked asset so fallback to regular image
         return (
           <View style={style} ref={this.handleRef}>
-            <ImageComponent
-              {...props}
-              source={source}
-              style={[StyleSheet.absoluteFill, imageStyle]}
-            />
+            <ImageComponent {...props} source={source} style={imageStyle} />
             {children}
           </View>
         );
@@ -229,7 +236,7 @@ export const createImageProgress = ImageComponent =>
             onLoad={this.handleLoad}
             onLoadEnd={this.handleLoadEnd}
             source={source}
-            style={[StyleSheet.absoluteFill, imageStyle]}
+            style={imageStyle}
           />
           {indicatorElement}
           {children}
