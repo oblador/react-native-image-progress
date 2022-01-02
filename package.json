@@ -6,7 +6,7 @@
   "types": "index.d.ts",
   "scripts": {
     "test": "eslint index.js",
-    "format": "./node_modules/.bin/prettier --write {,Example/}*.js"
+    "format": "./node_modules/.bin/prettier --write *.{js,ts} Example/*.{js,tsx}"
   },
   "keywords": [
     "react-native",
@@ -39,7 +39,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.8.0"
   },
   "devDependencies": {
     "@types/react-native": "^0.66.11",
@@ -51,6 +51,6 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
-    "prettier": "^1.13.3"
+    "prettier": "^2.5.1"
   }
 }
