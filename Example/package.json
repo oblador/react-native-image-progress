@@ -1,24 +1,34 @@
 {
-  "name": "Example",
+  "name": "example",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "postinstall": "DESTINATION='node_modules/react-native-image-progress' LIB_FILE=`cd .. && echo \\`pwd\\`/\\`npm pack\\`` && (rm -rf $DESTINATION || true) && mkdir $DESTINATION && tar -xvzf $LIB_FILE -C $DESTINATION --strip-components 1 && rm $LIB_FILE"
   },
   "dependencies": {
-    "react": "16.3.1",
-    "react-native": "0.55.4",
+    "react": "17.0.2",
+    "react-native": "0.66.4",
     "react-native-image-progress": "*",
-    "react-native-progress": "^3.4.0"
+    "react-native-progress": "^5.0.0",
+    "react-native-svg": "^12.1.1"
   },
   "devDependencies": {
-    "babel-jest": "23.0.1",
-    "babel-preset-react-native": "4.0.0",
-    "jest": "23.1.0",
-    "react-test-renderer": "16.3.1"
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "@types/react-native": "^0.66.4",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "eslint": "^7.14.0",
+    "metro-react-native-babel-preset": "^0.66.2",
+    "react-test-renderer": "17.0.2",
+    "typescript": "^4.4.4"
   },
-  "jest": {
-    "preset": "react-native"
+  "resolutions": {
+    "@types/react": "^17"
   }
 }

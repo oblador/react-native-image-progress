@@ -12,9 +12,9 @@ const styles = StyleSheet.create({
 
 const DefaultIndicator = ActivityIndicator;
 
-const getSourceKey = source => (source && source.uri) || String(source);
+const getSourceKey = (source) => (source && source.uri) || String(source);
 
-export const createImageProgress = ImageComponent =>
+export const createImageProgress = (ImageComponent) =>
   class ImageProgress extends Component {
     static propTypes = {
       children: PropTypes.node,
@@ -103,7 +103,7 @@ export const createImageProgress = ImageComponent =>
     }
 
     ref = null;
-    handleRef = ref => {
+    handleRef = (ref) => {
       this.ref = ref;
     };
 
@@ -124,7 +124,7 @@ export const createImageProgress = ImageComponent =>
       this.bubbleEvent('onLoadStart');
     };
 
-    handleProgress = event => {
+    handleProgress = (event) => {
       const progress = event.nativeEvent.loaded / event.nativeEvent.total;
       // RN is a bit buggy with these events, sometimes a loaded event and then a few
       // 100% progress – sometimes in an infinite loop. So we just assume 100% progress
@@ -138,7 +138,7 @@ export const createImageProgress = ImageComponent =>
       this.bubbleEvent('onProgress', event);
     };
 
-    handleError = event => {
+    handleError = (event) => {
       this.setState({
         loading: false,
         error: event.nativeEvent,
@@ -146,7 +146,7 @@ export const createImageProgress = ImageComponent =>
       this.bubbleEvent('onError', event);
     };
 
-    handleLoad = event => {
+    handleLoad = (event) => {
       if (this.state.progress !== 1) {
         this.setState({
           error: null,
@@ -157,7 +157,7 @@ export const createImageProgress = ImageComponent =>
       this.bubbleEvent('onLoad', event);
     };
 
-    handleLoadEnd = event => {
+    handleLoadEnd = (event) => {
       this.setState({
         loading: false,
         progress: 1,
@@ -190,13 +190,8 @@ export const createImageProgress = ImageComponent =>
           </View>
         );
       }
-      const {
-        progress,
-        sourceKey,
-        thresholdReached,
-        loading,
-        error,
-      } = this.state;
+      const { progress, sourceKey, thresholdReached, loading, error } =
+        this.state;
 
       let indicatorElement;
 
